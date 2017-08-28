@@ -1,4 +1,4 @@
-#Rolly Polly Scheduling App
+# Rolly Polly Scheduling App
 This project was bootstrapped with Team Alpha from Bob's CS 3550 Class at DSU
 
 Below you will find some information on how to the code works.<br>
