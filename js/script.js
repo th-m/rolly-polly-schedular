@@ -1,39 +1,4 @@
-// function getTemplateTabs(callback = null){
-//   templateObj['inbound_email_id'] = $('.controller_view #get_inbound_test').val();
-//     $.ajax({
-//       url: 'app/template_tabs.php',
-//       type:'POST',
-//       data: JSON.stringify({templateObj})
-//     }).done(function(data) {
-//       let json = $.parseJSON(data);
-//       // console.log(json);
-//       if(json.response == 'success'){
-//         $('#template_tabs_nav').html(json.html);
-//         if(callback != null){
-//           callback();
-//         }
-//       }
-//     });
-// }
 
-// function queryDB(data , callback = null){
-//   values = {
-//     'function': "db_query",
-//     'data': data, // This expects a sql query. Which will return 
-//   }
-//   $.ajax({
-//     url: 'php/router.php',
-//     type:'POST',
-//     data: JSON.stringify({values})
-//   }).done(function(data) {
-//     let json = $.parseJSON(data);
-//     if(callback != null){
-//       callback(json.response);
-//       return true;
-//     }
-//     return json;
-//   });
-// }
 // NOTE: this function will intereact with our php router / database when needed
 function routerPost(func, data = null, callback = null){
   
@@ -66,8 +31,7 @@ function routerPost(func, data = null, callback = null){
   });
 }
 
-function renderView(view, div = "rolly_polly_main", data = null, callback = null){
-  
+function renderView(view, data = null, div = "rolly_polly_main",  callback = null){
   // NOTE: view will be the php file that returns our view. 
   // NOTE: div will be where the content will be injected. 
   // NOTE: data will be extra data needed or wanted for rendering.
@@ -78,27 +42,22 @@ function renderView(view, div = "rolly_polly_main", data = null, callback = null
   if(data != null){
     values['data'] = data; // data applied should correlate with route.  
   }
-  
   // NOTE: sending a post request using jquery's ajax function.
-  $.ajax({
-    url: 'views/'+view+'.php',
-    type:'POST',
-    data: JSON.stringify(values),
-    dataType:"json",
-    success: function (data) {
-              console.log(data);
-                let json = $.parseJSON(data);
-                if(callback != null){
-                  callback(json);
-                  return true; // if we have a callback function we will let that handle the json;
-                }
-                return json; // If now callback function specified we assume the user wants the json data.
-             },
-    error: function (err) {
-            console.log(err);
-    }
-  });
-}
-    
 
-let test = routerPost('test_hi');
+  // $('#rolly_polly_main').load('./php/views/'+view+'.php', {"json": JSON.stringify(data)});
+  // console.log(JSON.stringify(data));
+  $('#rolly_polly_main').load('./php/views/'+view+'.php', data);
+}
+
+function prepRenderView(lnkData){
+  view = lnkData.view;
+  renderView(view, lnkData);
+}
+
+navLinks = document.querySelectorAll("nav ul li");   
+navLinks.forEach(lnk => {
+  lnk.addEventListener('click', function(){ prepRenderView(lnk.dataset);}, false);
+  // lnk.addEventListener('click', renderView(lnk.dataset.view));
+}); 
+console.log(navLinks);
+

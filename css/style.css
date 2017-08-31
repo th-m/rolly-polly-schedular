@@ -1,1 +1,30 @@
-.test_red{color: red;}
+html,body {
+height: 100%;
+padding: 0;
+margin: 0;
+}
+nav ul {
+/* We first create a flex layout context */
+display: flex;
+/* Then we define the flow direction and if we allow the items to wrap */
+flex-flow: row wrap;
+/* Then we define how is distributed the remaining space */
+justify-content: space-around;
+
+border: 1px solid #999999;
+
+padding: 0px;
+}
+nav ul li {
+  /*text-decoration: none;*/
+  list-style-type: none;
+  margin: 10px;
+  padding: 10px;
+  /*background-color: #FF0000;*/
+  border: 1px solid #3c3cff;
+  border-radius: 5px;
+}
+
+nav ul li:hover{
+  background-color: #3c3cff; 
+}

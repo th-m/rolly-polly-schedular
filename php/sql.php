@@ -1,5 +1,5 @@
 <?php
-  require("./cons.php"); 
+  require("cons.php"); 
 
   function sql_format_helper($data, $table, $is_select = Null){
     global $link;
@@ -36,7 +36,7 @@
   function update_sql($data, $table){
     global $link;
     $exists = False;
-    if(isset($data['id'] && $data['id'] != "")){
+    if(isset($data['id']) && $data['id'] != ""){
       // $id = $data['id'];
       $exists = sql_check_id($data['id'], $table);
     }
@@ -45,7 +45,7 @@
       $query = "UPDATE $table SET $fields WHERE id = {$data['id']};";
       mysqli_query($link, $query);
     }else{
-      if (isset($data['id'] && $data['id'] != "")){
+      if (isset($data['id']) && $data['id'] != ""){
           $fields .= ',id = '. $data['id'];
       }
       mysqli_query($link, "INSERT INTO $table SET $fields;");

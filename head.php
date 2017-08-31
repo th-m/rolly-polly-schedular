@@ -7,3 +7,13 @@
     <link rel="stylesheet" href="./css/style.css">
   </head>
   <body>
+    <nav>
+      <ul>
+        <li data-view="edit" data-table="teachers">Teachers</li>
+        <li data-view="edit" data-table="classes">Classes</li>
+        <li data-view="edit" data-table="events">Events</li>
+        <li data-view="edit" data-table="roles">Roles</li>
+        <li data-view="schedule" data-info="schedule">Schedule</li>
+        <li data-view="prep" data-info="prep">Prep</li>
+      </ul>
+    </nav>
