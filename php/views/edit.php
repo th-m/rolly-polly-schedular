@@ -51,9 +51,20 @@
 </style>
 <script type="text/javascript">
   formData = {}
-  formData.cols = <?=$columns?>;
+  // formData.cols = <?=$columns?>;
+  formData.table = '<?=$_POST['table']?>';
   $('#editMain').load('./php/views/components/form.php', formData);
+  // let drawerLinks = document.querySelectorAll('.drawer ul li');
+  document.querySelectorAll('.drawer ul li').forEach(lnk =>{
+    lnk.addEventListener('click', function(){ 
+      showFormData(lnk.dataset);
+    }, false);
+  })
   
+  function showFormData(data) {
+    formData.rowId = data.rowid;
+    $('#editMain').load('./php/views/components/form.php', formData);
+  }
 </script>
 <!-- <pre>
   <?php print_r($columns);  ?>
@@ -61,23 +72,14 @@
 <div class="container">
   <div class="drawer" >
     <ul>
-      
       <?php foreach ($table_info as $row) { 
         // NOTE:teacher_id, id should be in hidden inputs
         //  role_id ties to events, so lets show a drop down of roles.
         ?>
-          <li data-table"<?=$v['table']?>" data-rowId="<?=$row['id']?>"><?=$row['title']?></li>
+          <li data-table"<?=$v['table']?>" data-rowid="<?=$row['id']?>"><?=$row['title']?></li>
       <?php } ?>
     </ul>
   </div>
-  <div id="editMain" >
-    <!-- <form class="" action="" >
-      <?php foreach ($columns as $column) { 
-        // NOTE: we can pregmatch(_id) and replace with s, run through a qry and pull lists
-        // NOTE: if id we need to hide it.
-        ?>
-        <input type="text" name="<?=$column?>" value="" placeholder="<?=$column?>">
-      <?php } ?>
-    </form> -->
+  <div id="editMain">
   </div>
 </div>
