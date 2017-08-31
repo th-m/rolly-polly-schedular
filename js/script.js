@@ -59,6 +59,6 @@ navLinks.forEach(lnk => {
   lnk.addEventListener('click', function(){ prepRenderView(lnk.dataset);}, false);
   // lnk.addEventListener('click', renderView(lnk.dataset.view));
 }); 
-console.log(navLinks);
-var drawerLinks;
+// console.log(navLinks);
+// var drawerLinks;
 

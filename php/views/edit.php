@@ -14,7 +14,7 @@
     
 ?>
 <style media="screen">
-.container {
+.editContainer {
   height: 100%;
   display: -ms-flexbox;
   display: -webkit-box;
@@ -40,13 +40,16 @@
 }
 
 
-.editMain {
+#editMain {
   background: aliceblue;
  -ms-flex: 1;
  -webkit-box-flex: 1;
  -moz-box-flex: 1;
  -ms-box-flex: 1;
  box-flex: 1;  
+}
+#editMain form{
+  width: 100%;
 }
 </style>
 <script type="text/javascript">
@@ -69,7 +72,7 @@
 <!-- <pre>
   <?php print_r($columns);  ?>
 </pre> -->
-<div class="container">
+<div class="editContainer">
   <div class="drawer" >
     <ul>
       <?php foreach ($table_info as $row) { 
