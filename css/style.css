@@ -5,19 +5,13 @@ padding: 0;
 margin: 0;
 }
 nav ul {
-/* We first create a flex layout context */
 display: flex;
 flex-wrap: wrap;
 justify-content: center;
-/* Then we define the flow direction and if we allow the items to wrap */
-/*flex-flow: row wrap;*/
-/* Then we define how is distributed the remaining space */
-/*justify-content: space-between;*/
-
 border: 1px solid #999999;
-
 padding: 0px;
 }
+
 nav ul li {
   /*text-decoration: none;*/
   display: flex;
@@ -33,3 +27,44 @@ nav ul li {
 nav ul li:hover{
   background-color: #3c3cff; 
 }
+
+
+/*TEADHERS VIEW AND EDIT VIEW*/
+.editContainer {
+  height: 100%;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-box;
+  display: box;
+  
+  -ms-flex-direction: row;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -ms-box-orient: horizontal;
+  box-orient: horizontal;
+}
+
+.drawer {
+  background: hotpink;
+  width: 20%;
+  -ms-flex: 0 100px;
+  -webkit-box-flex:  0;
+  -moz-box-flex:  0;
+  -ms-box-flex:  0;
+  box-flex:  0;  
+}
+
+
+#editMain {
+  background: aliceblue;
+ -ms-flex: 1;
+ -webkit-box-flex: 1;
+ -moz-box-flex: 1;
+ -ms-box-flex: 1;
+ box-flex: 1;  
+}
+#editMain form{
+  width: 100%;
+}
+/*END TEADHERS VIEW AND EDIT VIEW*/

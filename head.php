@@ -9,8 +9,8 @@
   <body>
     <nav>
       <ul>
-        <li data-view="edit" data-table="teachers">Teachers</li>
-        <li data-view="edit" data-table="classes">Classes</li>
+        <li data-view="edit" data-table="staff_members" data-assoctables='staff_roles,staff_rooms'>Teachers</li>
+        <li data-view="edit" data-table="rooms">Room</li>
         <li data-view="edit" data-table="events">Events</li>
         <li data-view="edit" data-table="roles">Roles</li>
         <li data-view="schedule" data-info="schedule">Schedule</li>

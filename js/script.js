@@ -37,28 +37,23 @@ function renderView(view, data = null, div = "rolly_polly_main",  callback = nul
   // NOTE: data will be extra data needed or wanted for rendering.
   // NOTE: callback will be the callback function to fire. 
   
-  values = {};
-
-  if(data != null){
-    values['data'] = data; // data applied should correlate with route.  
-  }
+  // values = {};
+  // 
+  // if(data != null){
+  //   values['data'] = data; // data applied should correlate with route.  
+  // }
+  // console.log(data.assoctables);
   // NOTE: sending a post request using jquery's ajax function.
 
   // $('#rolly_polly_main').load('./php/views/'+view+'.php', {"json": JSON.stringify(data)});
-  // console.log(JSON.stringify(data));
+  // console.log(JSON.parse(data));
   $('#rolly_polly_main').load('./php/views/'+view+'.php', data);
 }
 
-function prepRenderView(lnkData){
-  view = lnkData.view;
-  renderView(view, lnkData);
-}
 
 navLinks = document.querySelectorAll("nav ul li");   
 navLinks.forEach(lnk => {
-  lnk.addEventListener('click', function(){ prepRenderView(lnk.dataset);}, false);
-  // lnk.addEventListener('click', renderView(lnk.dataset.view));
+  lnk.addEventListener('click', function(){ renderView(lnk.dataset.view, lnk.dataset);}, false);
 }); 
-// console.log(navLinks);
-// var drawerLinks;
+
 
