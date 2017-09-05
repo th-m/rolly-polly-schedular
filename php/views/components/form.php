@@ -8,9 +8,9 @@
   $table_info = sql_query($qry);
 
 ?>  
-<pre>
+<!-- <pre>
 <?php print_r($_POST); ?>
-</pre>
+</pre> -->
 <!-- <pre>
 <?php print_r($table_info); ?>
 </pre> -->
@@ -27,9 +27,9 @@
 <form class="" action="" >
   <?php foreach ($columns as $column) { 
     if(strpos($column, '_id')){  ?>
-    <!-- <select id="<?=$column?>"> -->
+    <select id="<?=$column?>">
       <?php selectBoxOptionHelper($column, $_POST['rowId'], $_POST['table']); ?>
-    <!-- </select>    -->
+    </select>   
     <br> 
   <?php } else { ?>
     <input type="text" name="<?=$column?>" value="<?=$table_info[0][$column]?>" placeholder="<?=$column?>">

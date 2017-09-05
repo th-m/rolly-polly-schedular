@@ -20,9 +20,8 @@
     foreach ($assoc_table_info as $info) {
       $id = $info['id'];
       $title = $info['title'];
-      // $selected = (($row_id != Null && $row_id == $id) ? 'selected': '');
-      // echo "<option id='$id' value='$id'> $title $selected_ids[0] </option>";
-      echo print_r($selected_ids);
+      $selected = (($selected_ids[0]['room_id'] != Null && $selected_ids[0]['room_id'] == $id) ? 'selected': '');
+      echo "<option id='$id' value='$id' $selected> $title </option>";
     }
     
   }

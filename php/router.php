@@ -8,9 +8,12 @@
   $reponse = array('response' => "notChanged");
   
   switch ($json['function']) {
-  //  case 'db_post':
-  //    # code...
-  //    break;
+   case 'db_post':
+    //  echo "tester";
+     # code...
+    //  $response['response'] =  update_sql($json['data']['data'], $json['data']['table']);
+     $response['response'] = "hello";
+     break;
   //  
   //  case 'db_query':
   //    # code...

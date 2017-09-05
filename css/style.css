@@ -67,4 +67,8 @@ nav ul li:hover{
 #editMain form{
   width: 100%;
 }
+
+.hidden{
+  display: none;
+}
 /*END TEADHERS VIEW AND EDIT VIEW*/
