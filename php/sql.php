@@ -36,6 +36,7 @@
   function update_sql($data, $table){
     global $link;
     $exists = False;
+    // return "$data, $table";
     if(isset($data['id']) && $data['id'] != ""){
       // $id = $data['id'];
       $exists = sql_check_id($data['id'], $table);
@@ -43,16 +44,16 @@
     $fields = sql_format_helper($data, $table);
     if($exists){
       $query = "UPDATE $table SET $fields WHERE id = {$data['id']};";
-      // mysqli_query($link, $query);
+      mysqli_query($link, $query);
       return $query;
     }else{
       if (isset($data['id']) && $data['id'] != ""){
           $fields .= ',id = '. $data['id'];
       }
-      // mysqli_query($link, "INSERT INTO $table SET $fields;");
+      mysqli_query($link, "INSERT INTO $table SET $fields;");
       // echo "INSERT INTO $table SET $fields;";
-      // return mysqli_insert_id($link);
-      return "INSERT INTO $table SET $fields;";
+      return mysqli_insert_id($link);
+      // return "INSERT INTO $table SET $fields;";
     }
   }
 

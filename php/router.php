@@ -5,19 +5,22 @@
   $json = json_decode($json, true);
   
   //NOTE: Set our initial response.
-  $reponse = array('response' => "notChanged");
+  $response = array('response' => "notChanged");
   
   switch ($json['function']) {
    case 'db_post':
-    //  echo "tester";
      # code...
-    //  $response['response'] =  update_sql($json['data']['data'], $json['data']['table']);
-     $response['response'] = "hello";
+     $response['rowId'] =  update_sql($json['data']['data'], $json['data']['table']);
+    //  $response['response'] =  $json;
+    // $test_hi = test_hi();
+    // //NOTE: using double qoutes allows us to include variables without concatinating
+    // //NOTE: using sinqle qoutes returns a literal string.
+    // $response['response'] = "test";
      break;
   //  
-  //  case 'db_query':
-  //    # code...
-  //    break;
+   case 'db_query':
+     echo "string";
+     break;
   
   //  case 'db_delete':
   //    # code...
@@ -27,7 +30,7 @@
     $test_hi = test_hi();
     //NOTE: using double qoutes allows us to include variables without concatinating
     //NOTE: using sinqle qoutes returns a literal string.
-    $reponse['response'] = "$test_hi";
+    $response['response'] = "$test_hi";
     
      break;
    
@@ -36,8 +39,9 @@
   //    break;
   }
   
-  $return = json_encode($reponse);
+  // $return = json_encode($response);
     //  print_r($return);
-  echo json_encode($return);
+  echo json_encode($response);
+  // echo ($response);
   
 ?>

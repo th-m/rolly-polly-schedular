@@ -7,44 +7,47 @@
     $table_info = sql_query($qry);
     $columns = json_encode(array_keys($table_info[0]));
 ?>
+
 <style media="screen">
   .hidden{
     display: none;
   }
 </style>
-<script type="text/javascript">
-  formData = JSON.parse('<?=json_encode($_POST)?>'); // We do this to capture arrays.
-  $('#editMain').load('./php/views/components/form.php', formData);
 
+<script type="text/javascript">
+  formData = JSON.parse('<?=json_encode($_POST)?>');
+  $('#editMain').load('./php/views/components/form.php', formData);
+  
+  function showFormData(data) {
+    formData.rowId = data.rowid;
+    $('#editMain').load('./php/views/components/form.php', formData);
+  }
+  
   document.querySelectorAll('.drawer ul .row_info').forEach(lnk =>{
     lnk.addEventListener('click', function(){ 
       showFormData(lnk.dataset);
     }, false);
   })
-  function showFormData(data) {
-    console.log("hello");
-    formData.rowId = data.rowid;
-    $('#editMain').load('./php/views/components/form.php', formData);
-  }
   
   document.querySelector('.save_row button').addEventListener('click', function(){
     input = document.querySelector('.save_row input');
-    // console.log(input.value);
     document.querySelector('.add_row').classList.remove("hidden");
     this.parentElement.classList.add('hidden');
-    // $('#editMain').load('./php/views/components/form.php', formData);
-    routerPost('db_post', {data:{title:input.title}, table:'<?=$_POST['table']?>'});
-    routerPost('db_post');
-    routerPost('test_hi');
+    routerPost('db_post', {data:{title:input.value}, table:'<?=$_POST['table']?>'}, function(data){
+      tempData = {
+        view: "edit",
+        table: "<?=$_POST['table']?>",
+        rowId: data.rowId
+      }
+      renderView(tempData.view, tempData);
+    });
   });
-  function pressedKeys(){
-    console.log("gotcha");
-  }
   
   document.querySelector('.add_row').addEventListener('click', function(){
       this.classList.add('hidden');
       document.querySelector('.save_row').classList.remove("hidden");
   });
+  
 </script>
 <div class="editContainer">
   <div class="drawer" >
