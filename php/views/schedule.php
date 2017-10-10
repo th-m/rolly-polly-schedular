@@ -11,7 +11,8 @@
   printBtn = document.querySelector('#print');
   printBtn.addEventListener('click',function(){
     console.log("printintg");
-    window.print();
+    scheduleDiv = document.querySelector('#schedule');
+    scheduleDiv.print();
   });
   
   emailBtn = document.querySelector('#email');
@@ -24,3 +25,7 @@
 </script>
 <button id="print" type="button" name="button">Print</button>
 <button id="email" type="button" name="button">email</button>
+
+<div id="schedule" class="">
+  <h1>test</h1>
+</div>
