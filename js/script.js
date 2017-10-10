@@ -1,5 +1,5 @@
 
-// NOTE: this function will intereact with our php router / database when needed
+// NOTE: this function will interact with our php router / database when needed
 function routerPost(func, data = null, callback = null){
   
   // NOTE: build the data object to be used by router.php
@@ -22,6 +22,7 @@ function routerPost(func, data = null, callback = null){
                };
                 
   fetch('php/router.php', myInit).then(function(response) {
+    console.log("fetching router");
     return response.json();
   }).then(function(data) {
     json = (data);
@@ -29,6 +30,7 @@ function routerPost(func, data = null, callback = null){
       callback(json);
       return true; // if we have a callback function we will let that handle the json;
     }
+    console.log(data);
     return json;
   });
 
