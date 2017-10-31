@@ -69,6 +69,7 @@
       $query = "DELETE FROM $table WHERE id = $id;";
       mysqli_query($link, $query);
     }
+    return true;
   }
 
   function sql_query($sql){

@@ -1,7 +1,8 @@
 
 // NOTE: this function will interact with our php router / database when needed
 function routerPost(func, data = null, callback = null){
-  
+  // console.log(func);
+  // console.log(data);
   // NOTE: build the data object to be used by router.php
   values = {
     'function': func // "test_hi",
@@ -23,14 +24,16 @@ function routerPost(func, data = null, callback = null){
                 
   fetch('php/router.php', myInit).then(function(response) {
     console.log("fetching router");
+    // console.log(response.json());
     return response.json();
   }).then(function(data) {
+    console.log(data);
     json = (data);
     if(callback != null){
       callback(json);
       return true; // if we have a callback function we will let that handle the json;
     }
-    console.log(data);
+    // console.log(data);
     return json;
   });
 
@@ -56,7 +59,7 @@ function renderView(view, data = null, div = "rolly_polly_main",  callback = nul
   $('#'+div).load('./php/views/'+view+'.php', data);
 }
 //NOTE: This method facilitates the main menu
-navLinks = document.querySelectorAll("nav ul li");   
+navLinks = document.querySelectorAll("nav ul li .get_view");   
 navLinks.forEach(lnk => {
   lnk.addEventListener('click', function(){ renderView(lnk.dataset.view, lnk.dataset);}, false);
 }); 

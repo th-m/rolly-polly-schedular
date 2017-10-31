@@ -9,17 +9,18 @@
   
   switch ($json['function']) {
    case 'db_post':
-     # code...
      $response['rowId'] =  update_sql($json['data']['data'], $json['data']['table']);
-    //  $response['response'] =  $json;
-    // $test_hi = test_hi();
     // //NOTE: using double qoutes allows us to include variables without concatinating
     // //NOTE: using sinqle qoutes returns a literal string.
-    // $response['response'] = "test";
      break;
-  //  
    case 'db_query':
      echo "string";
+     break;
+   case 'db_delete':
+     sql_delete($json['data']['id'], $json['data']['table']);
+     $response['rowId'] = $json['data']['id'];
+     $response['response'] = "deleted" ;
+    //  echo "string";
      break;
   
    case 'emailer':
@@ -52,7 +53,7 @@
   }
   
   // $return = json_encode($response);
-    //  print_r($return);
+  // echo(json_encode($response));
   echo json_encode($response);
   // echo ($response);
   
