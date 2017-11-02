@@ -35,6 +35,7 @@
 
   function update_sql($data, $table){
     global $link;
+    // print($data);
     $exists = False;
     // return "$data, $table";
     if(isset($data['id']) && $data['id'] != ""){

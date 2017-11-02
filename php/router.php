@@ -13,6 +13,21 @@
     // //NOTE: using double qoutes allows us to include variables without concatinating
     // //NOTE: using sinqle qoutes returns a literal string.
      break;
+   case 'update_prep_json':
+     date_default_timezone_set("America/Denver");
+     $sunday = strtotime('Sunday');
+     $d = date('Y-m-d', $sunday);
+     $qry = "SELECT id FROM kids_next_week WHERE date = '$d'";
+     $prep_id= sql_query($qry);
+     if(isset($prep_id[0]['id']) && $prep_id[0]['id'] != ""){
+       $json['data']['id'] = $prep_id[0]['id'];
+     }
+     $json['data']['json_blob'] = json_encode($json['data']['json_blob']);
+    //  print_r($json['data']);
+     $response['rowId'] =  update_sql($json['data'], 'kids_next_week');
+    // //NOTE: using double qoutes allows us to include variables without concatinating
+    // //NOTE: using sinqle qoutes returns a literal string.
+     break;
    case 'db_query':
      echo "string";
      break;

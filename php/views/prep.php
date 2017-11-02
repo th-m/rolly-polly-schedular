@@ -3,6 +3,22 @@
   
   $qry = "SELECT * FROM rooms";
   $rooms= sql_query($qry);
+   date_default_timezone_set("America/Denver");
+   $sunday = strtotime('Sunday');
+  $d = date('Y-m-d', $sunday);
+  $qry = "SELECT json_blob FROM kids_next_week WHERE date = '$d'";
+  // echo $qry;
+  $prepBlob= sql_query($qry);
+  if(isset($prepBlob[0]['json_blob']) && $prepBlob[0]['json_blob'] != ""){
+    $json_blob = json_encode($prepBlob[0]['json_blob']);
+  }else{
+    $json_blob = "false";
+  }
+  // echo $json_blob;
+  // echo($prepBlob);
+  // print($prepBlob);
+  
+  
 
  ?>
  <style media="screen">
@@ -30,6 +46,7 @@
      height: 35px;
    }
    .wrapper table tbody tr td .hour{
+     text-align: center;
       border-bottom: 1px solid #e6e6e6;
    }
    .wrapper table tbody tr td .hour:hover{
@@ -59,33 +76,92 @@
       background-color: #eaeaea;
       border-radius: 7px;
     }
+    .rooms_list .selected{
+      background-color: #c1c1c1;
+    }
     .rooms_list span:hover{
       background-color: #c1c1c1;
     }
  </style>
  <script type="text/javascript">
- 
-   document.querySelectorAll("tbody tr .day").forEach(x =>{
-     for(i=0;i<13;i++){
-       hr = document.createElement('div');
-       hr.className += "hour";
-       x.append(hr);
-     }
+   var prepOBJ = {};
+   var jsonBlob = <?=$json_blob?>;
+   var weekDays = ['monday','tuesday','wednesday','thursday','friday'];
+   
+   if(jsonBlob && jsonBlob != "null"){
+     prepOBJ = JSON.parse(jsonBlob);
+     console.log("i think we have data");
+     console.log(jsonBlob);
+     console.log(prepOBJ);
+   }else{
+     setUpBlankPrepObj();
+   }
+   
+   function setUpBlankPrepObj(){
+     document.querySelectorAll(".rooms_list span").forEach(x => {
+        prepOBJ[x.dataset.roomid] = {};  
+        weekDays.forEach(xx =>{
+          prepOBJ[x.dataset.roomid][xx] = {};
+          for(i=0;i<13;i++){
+            prepOBJ[x.dataset.roomid][xx][7+i] = 0;
+          }
+        });
+     });
+   }
+  
+   function getClassPrepData(classId){
+     weekDays.forEach(wd =>{
+       weekDiv = document.querySelector("tbody tr [data-day='"+wd+"']");
+       weekDiv.innerHTML = "";
+        Object.keys(prepOBJ[classId][wd]).forEach(h => {
+          hr = document.createElement('div');
+          hr.className += "hour";
+          hr.dataset.hour = h;
+          hr.innerHTML = prepOBJ[classId][wd][h]
+          weekDiv.append(hr);
+        }); 
+     });
+     clickDragger();
+   }
+
+   document.querySelector(".rooms_list span:first-child").className += "selected";
+   getClassPrepData(document.querySelector(".rooms_list span:first-child").dataset.roomid);
+    
+   document.querySelectorAll(".rooms_list span").forEach(x => {
+      x.addEventListener("click", function(){
+        document.querySelectorAll(".rooms_list span").forEach(xx => {xx.className = ""});
+        x.className += "selected";
+        getClassPrepData(x.dataset.roomid);
+      });
    });
    
-  //  document.querySelectorAll(".day .hour").forEach(x =>{
-  //    console.log("Adding functions");
-  //    x.addEventListener('onMouseDown', changeColor);
-  //  });
-   $(function () {
+   function updateDB(){
+     console.log("fired update DB")
+     let classId = document.querySelector(".rooms_list .selected").dataset.roomid;
+     prepOBJ[classId]={};
+     
+     document.querySelectorAll("tbody tr .day").forEach(x =>{
+       day = x.dataset.day;
+       prepOBJ[classId][day]={};
+       $(x).children('.hour').each(function () {
+           num = this.dataset.kids?this.dataset.kids:0; 
+           prepOBJ[classId][day][this.dataset.hour] = num;
+       });
+     });
+     routerPost('update_prep_json',{'json_blob':prepOBJ}, function(data){
+       console.log(data);
+     });
+   }
+    
+   function clickDragger() {
      var isMouseDown = false;
      var limitDay;
      var divCells = [];
      var groupId = 0;
-    //  var kidCount = 0;
+    
      $("table td .hour")
        .mousedown(function () {
-         killSpans();
+         divCells=[];
          isMouseDown = true;
          $(this).toggleClass("highlighted");
          limitDay = $(this).parent().data('day');
@@ -96,7 +172,6 @@
          if (isMouseDown) {
            if($(this).parent().data('day') == limitDay){
              $(this).toggleClass("highlighted");
-            console.log($(this));
             divCells.push($(this));
            }
          }
@@ -105,123 +180,25 @@
           title: 'How many kids between this time',
           input: 'number',
           confirmButtonText: 'Submit',
-          // showLoaderOnConfirm: true,
-          // preConfirm: function (email) {
-          //   return new Promise(function (resolve, reject) {
-          //     setTimeout(function() {
-          //       if (email === 'taken@example.com') {
-          //         reject('This email is already taken.')
-          //       } else {
-          //         resolve()
-          //       }
-          //     }, 2000)
-          //   })
-          // },
-          // allowOutsideClick: false
+        
         }).then(function (kids) {
+          console.log(divCells);
           divCells.forEach(x => {
             x[0].classList.remove("highlighted");
             x[0].setAttribute('data-kids', kids);
-            // x[0].setAttribute('data-kids', kids);
+            x[0].innerHTML = kids;
           });
+          updateDB();
         })
-            // console.log(divCells);
-            // var newSpan = $('<span/>').addClass('selected-hours');
-            // var Cells = divCells.slice();
-            // console.log(Cells);
-            // frontOverLap = checkFront(divCells, 0);
-            // var cnt = $(".remove-just-this").contents();
-            // $(".remove-just-this").replaceWith(cnt);
-            // 
-            // if(divCells[0].parent().is("span")){
-            //   moveAfter(divCells, 0);
-            // }
-            // 
-            // if(divCells[divCells.length-1].parent().is("span")){
-            //   moveBefore(divCells, divCells.length-1);
-            // }
-            // // clearBack(divCells, divCells.length-1);
-            // createSpan(divCells);
-            // divCells.forEach(x => {
-            //   x[0].setAttribute('data-group', groupId);
-            // });
-            // createSpans();
-            // cleanEmptySpans();
-            // $(divCells[0]).before(newSpan);
-            // divCells.forEach(x => {newSpan.append(x);});
+            
            isMouseDown = false;
            limitDay="";
-           divCells=[];
            groupId ++;
         })
        .bind("selectstart", function () {
          return false; // prevent text selection in IE
        });
-      //  function moveAfter(arr, i){
-      //    if(arr[i].parent().is("span") && arr.length-1 != i){
-      //      arr[i].parent().after(arr[i]);
-      //      clearFront(arr,i+1);
-      //    }else{
-      //      return i
-      //    }
-      //  }
-      //  function moveBefore(arr,i){
-      //    if(arr[i].parent().is("span") && i != 0){
-      //      arr[i].after(arr[i].parent());
-      //     //  arr[i].parent().before(arr[i]);
-      //      clearBack(arr,i-1);
-      //    }else{
-      //      return
-      //    }
-      //  }
-      function killSpans(){
-        arr = document.querySelectorAll('.selected-hours');
-        arr.forEach(x =>{
-          var cnt = $(x).contents();
-          $(x).replaceWith(cnt);
-        });
-        
-      }
-      //TODO instead of create a span around the div we will just insert the number of kids selected for that time.
-      // we will then show a shade of color depending on the number of kids selected
-      //  function createSpans(){
-      //    for(i=0;i<=groupId;i++){
-      //      arr = document.querySelectorAll('*[data-group="'+i+'"]');
-      //      let newSpan = $('<span/>').addClass('selected-hours');
-      //      $(arr[0]).before(newSpan);
-      //      arr.forEach(x => {newSpan.append(x);});
-      //    }
-      //  }
-      //  function cleanEmptySpans(){
-      //    document.querySelectorAll('.selected-hours').forEach(x =>{
-      //      if(x.children.length == 0){
-      //        x.remove();
-      //        console.log("removing this div");
-      //        
-      //      }
-      //    })
-      //  }
-      //  //$toolbar.parent().after($toolbar);
-    //if one is selected
-    // check if it is in a parent selected-hours.
-    // if it is in a parent selected hours. pop it out.
-    // check if 
-    //  $(document).mouseup(function () {
-    //       divCells.push($(this));
-    //       var newSpan = $('<span/>').addClass('selected-hours');
-    //       for(i=0;i<divCells.length;i++){
-    //         divCells
-    //         if(i==0){
-    //           $(divCells[i]).before(newSpan);
-    //         }else{
-    //           newSpan.append(divCells[i]);
-    //         }
-    //       }
-    //      isMouseDown = false;
-    //      limitDay="";
-    //      divCells=[];
-    //   });
-   });
+   };
    
  </script>
  <div class="wrapper">
@@ -256,7 +233,7 @@
          </td>
          <td class="day" data-day="monday"></td>
          <td class="day" data-day="tuesday"></td>
-         <td class="day" data-day="wedday"></td>
+         <td class="day" data-day="wednesday"></td>
          <td class="day" data-day="thursday"></td>
          <td class="day" data-day="friday"></td>
        </tr>
