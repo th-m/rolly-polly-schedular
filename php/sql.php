@@ -76,7 +76,11 @@
   function sql_query($sql){
     global $link;
     $qry = mysqli_query($link, $sql);
-    $obj = ($qry?mysqli_fetch_all($qry,MYSQLI_ASSOC):"");
+    $data = [];
+    while ($row = $qry->fetch_assoc()) {
+        $obj[] = $row;
+    }
+    // $obj = ($qry?mysqli_fetch_all($qry,MYSQLI_ASSOC):"");
     // echo "$obj";
 
     return $obj;
