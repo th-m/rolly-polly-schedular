@@ -35,6 +35,7 @@
 
   function update_sql($data, $table){
     global $link;
+    // print($data);
     $exists = False;
     // return "$data, $table";
     if(isset($data['id']) && $data['id'] != ""){
@@ -69,6 +70,7 @@
       $query = "DELETE FROM $table WHERE id = $id;";
       mysqli_query($link, $query);
     }
+    return true;
   }
 
   function sql_query($sql){

@@ -10,6 +10,16 @@
   document.querySelector('form').addEventListener('submit', function(){
     console.log("hello");
   });
+  document.querySelector('#delete').addEventListener('click', function(){
+    routerPost('db_delete', {id:this.dataset.row, table:this.dataset.table}, function(data){
+      tempData = {
+        view: "edit",
+        table: "<?=$_POST['table']?>",
+        // rowId: data.rowId
+      }
+      renderView(tempData.view, tempData);
+    });
+  });
 </script>
 <form  action="javascript:void(0);" data-table="<?=$_POST['table']?>" data-row="<?=$rowId?>" >
   <?php foreach ($columns as $column) { 
@@ -25,4 +35,5 @@
   <?php }
     }  ?>
     <input type="submit" value="save">
+    <input id="delete" data-table="<?=$_POST['table']?>" data-row="<?=$rowId?>" type="button" value="delete">
 </form>

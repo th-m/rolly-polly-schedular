@@ -9,17 +9,33 @@
   
   switch ($json['function']) {
    case 'db_post':
-     # code...
      $response['rowId'] =  update_sql($json['data']['data'], $json['data']['table']);
-    //  $response['response'] =  $json;
-    // $test_hi = test_hi();
     // //NOTE: using double qoutes allows us to include variables without concatinating
     // //NOTE: using sinqle qoutes returns a literal string.
-    // $response['response'] = "test";
      break;
-  //  
+   case 'update_prep_json':
+     date_default_timezone_set("America/Denver");
+     $sunday = strtotime('Sunday');
+     $d = date('Y-m-d', $sunday);
+     $qry = "SELECT id FROM kids_next_week WHERE date = '$d'";
+     $prep_id= sql_query($qry);
+     if(isset($prep_id[0]['id']) && $prep_id[0]['id'] != ""){
+       $json['data']['id'] = $prep_id[0]['id'];
+     }
+     $json['data']['json_blob'] = json_encode($json['data']['json_blob']);
+    //  print_r($json['data']);
+     $response['rowId'] =  update_sql($json['data'], 'kids_next_week');
+    // //NOTE: using double qoutes allows us to include variables without concatinating
+    // //NOTE: using sinqle qoutes returns a literal string.
+     break;
    case 'db_query':
      echo "string";
+     break;
+   case 'db_delete':
+     sql_delete($json['data']['id'], $json['data']['table']);
+     $response['rowId'] = $json['data']['id'];
+     $response['response'] = "deleted" ;
+    //  echo "string";
      break;
   
    case 'emailer':
@@ -52,7 +68,7 @@
   }
   
   // $return = json_encode($response);
-    //  print_r($return);
+  // echo(json_encode($response));
   echo json_encode($response);
   // echo ($response);
   
