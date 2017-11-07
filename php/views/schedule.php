@@ -8,6 +8,17 @@
   // echo $date;
   $qry = "SELECT * FROM staff_members";
   $teachers= sql_query($qry);
+  
+  date_default_timezone_set("America/Denver");
+  $sunday = strtotime('Sunday');
+  $d = date('Y-m-d', $sunday);
+  // echo $d;
+  $qry = "SELECT * FROM schedule_next_week WHERE date = '$d'";
+  $schedule= sql_query($qry);
+  $schedule= json_encode($schedule);
+  // echo"test";
+  // echo $schedule;
+  // print_r($schedule);
 ?>
 <style media="screen">
   .wrapper table{
@@ -51,7 +62,10 @@
 <script type="text/javascript">
 // window.onload = function(){
 $(function() {
-
+  sched = <?=$schedule?>;
+  // TODO loop through schedule
+  // if data look at staff_id for row and day for day
+  // parse json blob for html.
   printBtn = document.querySelector('#print');
   printBtn.addEventListener('click',function(){
     console.log("printintg");
@@ -65,9 +79,10 @@ $(function() {
     routerPost('emailer');
   });
 
-  document.querySelectorAll('.wrapper table tbody tr td').forEach(x => {
+  document.querySelectorAll('.wrapper table tbody tr .day').forEach(x => {
     x.addEventListener('click',triggerModal);
-  })
+  });
+  
   function triggerModal(e){
     $d = $(e.target).data();
     day = $d.day;
@@ -75,9 +90,14 @@ $(function() {
     teacherName = $("#"+teacherId+" td:first-child").html();
     title = teacherName+" - "+day;
     $("#editTeacherLabel").html(title);
+    tempData = {
+      view: "components/modal",
+      day: day,
+      teacherId: teacherId
+    }
+    renderView(tempData.view, tempData, "modal_body");
     $('#teacherEditModal').modal();
   }
-  console.log( "ready!" );
 });
 </script>
 <div class="wrapper">
@@ -97,11 +117,11 @@ $(function() {
     <?php foreach ($teachers as $teacher) { ?>
     <tr id="<?=$teacher['id']?>" class="teacher_schedule">
 			<td><?=$teacher['title']?></td>
-			<td data-day="Monday"></td>
-			<td data-day="Tuesday"></td>
-			<td data-day="Wednesday"></td>
-			<td data-day="Thursday"></td>
-			<td data-day="Friday"></td>
+			<td class="day" data-day="Monday"></td>
+			<td class="day" data-day="Tuesday"></td>
+			<td class="day" data-day="Wednesday"></td>
+			<td class="day" data-day="Thursday"></td>
+			<td class="day" data-day="Friday"></td>
 		</tr>
     <?php } ?>
   </tbody>
@@ -118,12 +138,7 @@ $(function() {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+      <div id="modal_body">
       </div>
     </div>
   </div>

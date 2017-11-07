@@ -10,23 +10,26 @@
   switch ($json['function']) {
    case 'db_post':
      $response['rowId'] =  update_sql($json['data']['data'], $json['data']['table']);
-    // //NOTE: using double qoutes allows us to include variables without concatinating
-    // //NOTE: using sinqle qoutes returns a literal string.
      break;
    case 'update_prep_json':
      date_default_timezone_set("America/Denver");
      $sunday = strtotime('Sunday');
      $d = date('Y-m-d', $sunday);
      $qry = "SELECT id FROM kids_next_week WHERE date = '$d'";
+     //NOTE: we use Sundays as a dilimater to seperate weeks. 
      $prep_id= sql_query($qry);
      if(isset($prep_id[0]['id']) && $prep_id[0]['id'] != ""){
        $json['data']['id'] = $prep_id[0]['id'];
+     }else{
+       $qry = "INSERT INTO kids_next_week SET date = '$d'";
+       $ins= sql_query($qry);
+       $qry = "SELECT id FROM kids_next_week WHERE date = '$d'";
+       $prep_id= sql_query($qry);
+       $json['data']['id'] = $prep_id[0]['id'];      
      }
      $json['data']['json_blob'] = json_encode($json['data']['json_blob']);
     //  print_r($json['data']);
      $response['rowId'] =  update_sql($json['data'], 'kids_next_week');
-    // //NOTE: using double qoutes allows us to include variables without concatinating
-    // //NOTE: using sinqle qoutes returns a literal string.
      break;
    case 'db_query':
      echo "string";
@@ -35,41 +38,18 @@
      sql_delete($json['data']['id'], $json['data']['table']);
      $response['rowId'] = $json['data']['id'];
      $response['response'] = "deleted" ;
-    //  echo "string";
      break;
   
    case 'emailer':
-        $response['response'] = "emailing valacano";
-       // the message
+      $response['response'] = "emailing valacano";
       $msg = "First line of text\nSecond line of text";
-
-      // use wordwrap() if lines are longer than 70 characters
       $msg = wordwrap($msg,70);
 
-      // send email
       mail("valacano@yahoo.com","Rolly Polly Schedule",$msg);
      break;
-  
-  //  case 'db_delete':
-  //    # code...
-  //    break;
     
-   case 'test_hi':
-    $test_hi = test_hi();
-    //NOTE: using double qoutes allows us to include variables without concatinating
-    //NOTE: using sinqle qoutes returns a literal string.
-    $response['response'] = "$test_hi";
-    
-     break;
-   
-  //  default:
-  //    # code...
-  //    break;
   }
   
-  // $return = json_encode($response);
-  // echo(json_encode($response));
   echo json_encode($response);
-  // echo ($response);
   
 ?>

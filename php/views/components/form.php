@@ -28,6 +28,11 @@
       <?php selectBoxOptionHelper($column, $_POST['rowId'], $_POST['table']); ?>
     </select>   
     <br> 
+  <?php } elseif(strpos($column, '_list')) {  ?>
+    <select id="<?=$column?>">
+      <?php selectBoxOptionHelper($column, $_POST['rowId'], $_POST['table']); ?>
+    </select>   
+    <br> 
   <?php } else { ?>
     <label for="<?=$column?>"><?=str_replace("_"," ",$column);?></label><br>
     <input type="text" name="<?=$column?>" value="<?=$table_info[0][$column]?>" placeholder="<?=$column?>">
