@@ -15,7 +15,14 @@
   // echo $d;
   $qry = "SELECT * FROM schedule_next_week WHERE date = '$d'";
   $schedule= sql_query($qry);
-  $schedule= json_encode($schedule);
+  if(isset($schedule[0]) && $schedule[0] != ""){
+    $schedule = json_encode($schedule);
+  }else{
+    $schedule = "false";
+    // $schedule_blob = "false";
+  }
+  // $schedule= json_encode($schedule);
+  
   // echo"test";
   // echo $schedule;
   // print_r($schedule);
@@ -63,9 +70,32 @@
 // window.onload = function(){
 $(function() {
   sched = <?=$schedule?>;
+  if(sched && sched != "null"){
+    writeSchedule();
+    // console.log(sched);
+    // schedOBJ = JSON.parse(sched);
+    // console.log(schedOBJ);
+    // setTimeout(addRowsFromDB, 5); // timing is funny here. set a time out to wait for modal before firing function. 
+  }
   // TODO loop through schedule
   // if data look at staff_id for row and day for day
   // parse json blob for html.
+  function writeSchedule(){
+    sched.forEach(x =>{
+      console.log(x);
+      console.log(JSON.parse(x.json_blob));
+      let string;
+      let div = document.querySelector("tbody #teacher_"+x.staff_id+" [data-day='"+x.dow+"']");
+      JSON.parse(x.json_blob).forEach(j =>{
+        p = document.createElement("p");
+        p.innerHTML = j.room +" "+ j.start+"-"+j.stop;
+        div.appendChild(p);
+        // string+= j.room +" "+ j.start+"-"+j.stop;
+      });
+      // x.staff_id
+      // x.dow
+    });
+  }
   printBtn = document.querySelector('#print');
   printBtn.addEventListener('click',function(){
     console.log("printintg");
@@ -93,7 +123,7 @@ $(function() {
     tempData = {
       view: "components/modal",
       day: day,
-      teacherId: teacherId
+      teacherId: teacherId.replace("teacher_", "")
     }
     renderView(tempData.view, tempData, "modal_body");
     $('#teacherEditModal').modal();
@@ -115,7 +145,7 @@ $(function() {
     <tbody>
       
     <?php foreach ($teachers as $teacher) { ?>
-    <tr id="<?=$teacher['id']?>" class="teacher_schedule">
+    <tr id="teacher_<?=$teacher['id']?>" class="teacher_schedule">
 			<td><?=$teacher['title']?></td>
 			<td class="day" data-day="Monday"></td>
 			<td class="day" data-day="Tuesday"></td>

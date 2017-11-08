@@ -10,7 +10,7 @@ function routerPost(func, data = null, callback = null){
   if(data != null){
     values['data'] = data; 
   }
-
+  console.log(JSON.stringify(values));
   var myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append('Accept', 'application/json'); 
@@ -22,6 +22,7 @@ function routerPost(func, data = null, callback = null){
                };
                 
   fetch('php/router.php', myInit).then(function(response) {
+    console.log(response);
     return response.json();
   }).then(function(data) {
     if(callback != null){

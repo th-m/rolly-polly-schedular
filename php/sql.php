@@ -15,6 +15,7 @@
         if (array_key_exists($col, $table_columns[0])) {
 
           if ($count++ != 0) $fields .= "$iterator" ;
+          if(gettype($val) == "array") $val = json_encode($val);
           $val = ($val != "" ? "'".$val."'" : 'null');
           $fields .= "$col = $val";
        }

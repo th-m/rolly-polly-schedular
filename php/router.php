@@ -1,5 +1,8 @@
 <?php
   include("functions.php"); 
+   date_default_timezone_set("America/Denver");
+   $sunday = strtotime('Sunday');
+   $d = date('Y-m-d', $sunday);
   //NOTE: We capture the json post data, then we decode it so php can use it.
   $json = file_get_contents('php://input');
   $json = json_decode($json, true);
@@ -12,9 +15,7 @@
      $response['rowId'] =  update_sql($json['data']['data'], $json['data']['table']);
      break;
    case 'update_prep_json':
-     date_default_timezone_set("America/Denver");
-     $sunday = strtotime('Sunday');
-     $d = date('Y-m-d', $sunday);
+    
      $qry = "SELECT id FROM kids_next_week WHERE date = '$d'";
      //NOTE: we use Sundays as a dilimater to seperate weeks. 
      $prep_id= sql_query($qry);
@@ -28,8 +29,18 @@
        $json['data']['id'] = $prep_id[0]['id'];      
      }
      $json['data']['json_blob'] = json_encode($json['data']['json_blob']);
-    //  print_r($json['data']);
      $response['rowId'] =  update_sql($json['data'], 'kids_next_week');
+     break;
+   case 'update_teacher_schedule_json':
+    
+     $json['data']['date'] = $d;
+     $qry = "SELECT id FROM schedule_next_week WHERE date = '$d' AND dow = '{$json["data"]["dow"]}' AND staff_id = '{$json["data"]["staff_id"]}'; ";
+     $prep_id= sql_query($qry);  
+     if(isset($prep_id[0]['id']) && $prep_id[0]['id'] != ""){
+       $json['data']['id'] = $prep_id[0]['id'];
+     }
+     $response['rowId'] =  update_sql($json['data'], 'schedule_next_week');
+     
      break;
    case 'db_query':
      echo "string";
