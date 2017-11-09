@@ -83,14 +83,16 @@ $(function() {
   function writeSchedule(){
     sched.forEach(x =>{
       console.log(x);
-      console.log(JSON.parse(x.json_blob));
+      // console.log(JSON.parse(x.json_blob));
       let string;
       let div = document.querySelector("tbody #teacher_"+x.staff_id+" [data-day='"+x.dow+"']");
+      console.log(div);
       JSON.parse(x.json_blob).forEach(j =>{
+        console.log(j);
         p = document.createElement("p");
-        p.innerHTML = j.room +" "+ j.start+"-"+j.stop;
-        div.appendChild(p);
-        // string+= j.room +" "+ j.start+"-"+j.stop;
+      //   p.innerHTML = j.room +" "+ j.start+"-"+j.stop;
+        // div.appendChild(p);
+      //   // string+= j.room +" "+ j.start+"-"+j.stop;
       });
       // x.staff_id
       // x.dow

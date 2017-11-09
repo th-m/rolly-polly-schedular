@@ -30,3 +30,4 @@
 [Thu Oct 19 00:50:43.155895 2017] [:error] [pid 435] [client 127.0.0.1:64547] script '/Users/thom/Sites/rolly-polly-schedular/php/views/undefined.php' not found or unable to stat, referer: http://rolly.local/
 [Thu Oct 19 00:52:09.569386 2017] [:error] [pid 78564] [client 127.0.0.1:64849] script '/Users/thom/Sites/rolly-polly-schedular/php/views/undefined.php' not found or unable to stat, referer: http://rolly.local/
 [Thu Oct 19 00:53:02.368241 2017] [:error] [pid 470] [client 127.0.0.1:65087] script '/Users/thom/Sites/rolly-polly-schedular/php/views/undefined.php' not found or unable to stat, referer: http://rolly.local/
+[Thu Nov 09 10:58:14.233716 2017] [autoindex:error] [pid 454] [client 127.0.0.1:60745] AH01276: Cannot serve directory /Users/thom/Sites/rolly-polly-schedular/imgs/: No matching DirectoryIndex (index.html,index.html,index.php) found, and server-generated directory index forbidden by Options directive

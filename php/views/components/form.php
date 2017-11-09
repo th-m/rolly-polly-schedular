@@ -1,6 +1,9 @@
 <?php 
   include("../../functions.php"); 
-  $rowId = isset($_POST['rowId']) ? $_POST['rowId']: 1;
+  $qry = "SELECT id FROM {$_POST['table']} ORDER BY id ASC LIMIT 1";  
+  $first_id = sql_query($qry);
+  $rowId = isset($_POST['rowId']) ? $_POST['rowId']: $first_id[0]['id'];
+  
   $qry = "SELECT * FROM {$_POST['table']} WHERE id = $rowId";  
   $table_info = sql_query($qry);
   $dontShowColumns = ['id', 'company_id'];
@@ -30,7 +33,7 @@
     <br> 
   <?php } elseif(strpos($column, '_list')) {  ?>
     <select id="<?=$column?>">
-      <?php selectBoxOptionHelper($column, $_POST['rowId'], $_POST['table']); ?>
+      <?php multiSelectBoxHelper($column, $_POST['rowId'], $_POST['table']); ?>
     </select>   
     <br> 
   <?php } else { ?>

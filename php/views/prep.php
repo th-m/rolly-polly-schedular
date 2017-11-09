@@ -206,7 +206,7 @@
    <table>
      <thead>
        <tr>
-          <th>Hours</th>
+         <th>Hours</th>
          <th>Monday</th>
          <th>Tuesday</th>
          <th>Wednesday</th>
@@ -240,8 +240,12 @@
      </tbody>
    </table>
    <div class="rooms_list">
-     <?php foreach ($rooms as $room) { ?>
-       <span data-roomid="<?=$room['id']?>"><?=$room['title']?></span>
+     <?php foreach ($rooms as $room) { 
+        $cwd = getcwd();
+        $imgPath = "http://schedular.xyz/imgs/".$room['img'];
+       ?>
+       
+       <span data-roomid="<?=$room['id']?>"><?=$room['title']?>  <img src="<?=$imgPath?>" style="width:20px; height:20px;" alt=""></span>
      <?php } ?>
   
    </div>
