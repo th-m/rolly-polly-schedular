@@ -3,10 +3,20 @@
 
   function sql_format_helper($data, $table, $is_select = Null){
     global $link;
+    // echo $table;
     $count = 0;
     $fields = "";
     $get_table_columns = mysqli_query($link,"SELECT * FROM $table LIMIT 1;");
+    
+    // if($get_table_columns){      
+    //   while ($row = $get_table_columns->fetch_assoc()) {
+    //       print_r($row);
+    //       $obj[] = $row;
+    //   }
+    // }
     $table_columns = ($get_table_columns?mysqli_fetch_all($get_table_columns,MYSQLI_ASSOC):"");
+    // print_r($table_columns);
+    // print_r($obj);
     $iterator = ($is_select?" && ":",");
     foreach($data as $col => $val) {
       //NOTE: Empty strings break queries, and ID's are used differently

@@ -10,8 +10,13 @@
   $columns = array_diff(array_keys($table_info[0]), $dontShowColumns);
 ?>
 <script type="text/javascript">
+$(function() {
   document.querySelector('form').addEventListener('submit', function(){
-    console.log("hello");
+    let data = $(this).serializeObject();
+    data['table'] = '<?=$_POST['table']?>';
+    routerPost('update_forms',data, function(){
+      console.log("success");
+    });
   });
   document.querySelector('#delete').addEventListener('click', function(){
     routerPost('db_delete', {id:this.dataset.row, table:this.dataset.table}, function(data){
@@ -23,23 +28,29 @@
       renderView(tempData.view, tempData);
     });
   });
+  $('.selectpicker').selectpicker();
+});
 </script>
+
+<!-- <link rel="stylesheet" href="/css/master.css"> -->
 <form  action="javascript:void(0);" data-table="<?=$_POST['table']?>" data-row="<?=$rowId?>" >
+  <input type="hidden" name="id" value="<?=$rowId?>">
   <?php foreach ($columns as $column) { 
     if(strpos($column, '_id')){  ?>
-    <select id="<?=$column?>">
+    <label for="<?=$column?>"><?=str_replace("_id","",$column);?></label><br>
+    <select id="<?=$column?>" name="<?=$column?>" class="selectpicker" data-width="100%">
       <?php selectBoxOptionHelper($column, $_POST['rowId'], $_POST['table']); ?>
     </select>   
-    <br> 
   <?php } elseif(strpos($column, '_list')) {  ?>
-    <select id="<?=$column?>">
+    <label for="<?=$column?>"><?=str_replace("_list","",$column);?></label><br>
+    <select id="<?=$column?>" multiple  name="<?=$column?>" class="selectpicker" data-width="100%">
       <?php multiSelectBoxHelper($column, $_POST['rowId'], $_POST['table']); ?>
     </select>   
-    <br> 
-  <?php } else { ?>
-    <label for="<?=$column?>"><?=str_replace("_"," ",$column);?></label><br>
-    <input type="text" name="<?=$column?>" value="<?=$table_info[0][$column]?>" placeholder="<?=$column?>">
-    <br> 
+  <?php } elseif($column != "is_active") { ?>
+    <div class="form-group">
+      <label for="<?=$column?>"><?=str_replace("_"," ",$column);?></label><br>
+      <input type="text" class="form-control" name="<?=$column?>" value="<?=$table_info[0][$column]?>" placeholder="<?=$column?>">
+    </div>
   <?php }
     }  ?>
     <input type="submit" value="save">
