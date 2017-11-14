@@ -6,7 +6,8 @@
     // echo $table;
     $count = 0;
     $fields = "";
-    $get_table_columns = mysqli_query($link,"SELECT * FROM $table LIMIT 1;");
+    // $get_table_columns = mysqli_query($link,"SELECT * FROM $table LIMIT 1;");
+    // $get_table_columns = sql_query("SELECT * FROM $table LIMIT 1;");
     
     // if($get_table_columns){      
     //   while ($row = $get_table_columns->fetch_assoc()) {
@@ -14,7 +15,8 @@
     //       $obj[] = $row;
     //   }
     // }
-    $table_columns = ($get_table_columns?mysqli_fetch_all($get_table_columns,MYSQLI_ASSOC):"");
+    $table_columns = sql_query("SELECT * FROM $table LIMIT 1;");
+    // $table_columns = ($get_table_columns?mysqli_fetch_all($get_table_columns,MYSQLI_ASSOC):"");
     // print_r($table_columns);
     // print_r($obj);
     $iterator = ($is_select?" && ":",");
