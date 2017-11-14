@@ -42,7 +42,11 @@
       $id = $info['id'];
       $title = str_replace("_"," ",$info['title']);
       $img = $info['img'];
-      $isSelected = (in_array($title, json_decode($selected[0][$column]))?"selected":"");
+      if(substr($selected[0][$column], 0,1) == "[" && substr($selected[0][$column],-1) == "]"){
+        $isSelected = (in_array($title, json_decode($selected[0][$column]))?"selected":"");
+      }else{
+        $isSelected = ($title == $selected[0][$column]?"selected":"");
+      }
       // $selected = (($selected_ids[0]['room_id'] != Null && $selected_ids[0]['room_id'] == $id) ? 'selected': '');
       if($column == "rooms_list"){
         echo " <option id='$id' ".$isSelected." data-content=\"<img style='width:20px; filter: invert(100%);'src='http://schedular.xyz/imgs/$img'><span>$title</span>\">$title</option>";
