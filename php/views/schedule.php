@@ -2,30 +2,19 @@
   include("../functions.php"); 
   date_default_timezone_set('Australia/Melbourne');
   $date = date('m/d/Y h:i:s a', time());
-  // echo "tester";
-  // $d = date;
-  
-  // echo $date;
   $qry = "SELECT * FROM staff_members";
   $teachers= sql_query($qry);
-  
+  $teachersJson = json_encode($teachers);
   date_default_timezone_set("America/Denver");
   $sunday = strtotime('Sunday');
   $d = date('Y-m-d', $sunday);
-  // echo $d;
   $qry = "SELECT * FROM schedule_next_week WHERE date = '$d'";
   $schedule= sql_query($qry);
   if(isset($schedule[0]) && $schedule[0] != ""){
     $schedule = json_encode($schedule);
   }else{
     $schedule = "false";
-    // $schedule_blob = "false";
   }
-  // $schedule= json_encode($schedule);
-  
-  // echo"test";
-  // echo $schedule;
-  // print_r($schedule);
 ?>
 <style media="screen">
   .wrapper table{
@@ -44,6 +33,7 @@
    padding: 0px;
    border-right: 1px solid #e6e6e6;
    border-bottom: 1px solid #e6e6e6;
+   text-align: center;
   }
   .wrapper table tbody tr td:first-child{
     text-align: center;
@@ -70,20 +60,15 @@
 // window.onload = function(){
 $(function() {
   sched = <?=$schedule?>;
+  staffMembers = <?=$teachersJson?>;
+  console.log("staffMembers");
+  console.log(staffMembers);
   if(sched && sched != "null"){
     writeSchedule();
-    // console.log(sched);
-    // schedOBJ = JSON.parse(sched);
-    // console.log(schedOBJ);
-    // setTimeout(addRowsFromDB, 5); // timing is funny here. set a time out to wait for modal before firing function. 
   }
-  // TODO loop through schedule
-  // if data look at staff_id for row and day for day
-  // parse json blob for html.
   function writeSchedule(){
     sched.forEach(x =>{
       console.log(x);
-      // console.log(JSON.parse(x.json_blob));
       let string;
       let div = document.querySelector("tbody #teacher_"+x.staff_id+" [data-day='"+x.dow+"']");
       console.log(div);
@@ -94,25 +79,10 @@ $(function() {
           p = document.createElement("p");
           p.innerHTML = j.room +" "+ j.start+"-"+j.stop;
           div.appendChild(p);
-        //   // string+= j.room +" "+ j.start+"-"+j.stop;
         });
       }
-      // x.staff_id
-      // x.dow
     });
   }
-  printBtn = document.querySelector('#print');
-  printBtn.addEventListener('click',function(){
-    console.log("printintg");
-    scheduleDiv = document.querySelector('#schedule');
-    scheduleDiv.print();
-  });
-  
-  emailBtn = document.querySelector('#email');
-  emailBtn.addEventListener('click',function() {
-    console.log("emailer");
-    routerPost('emailer');
-  });
 
   document.querySelectorAll('.wrapper table tbody tr .day').forEach(x => {
     x.addEventListener('click',triggerModal);
@@ -133,6 +103,34 @@ $(function() {
     renderView(tempData.view, tempData, "modal_body");
     $('#teacherEditModal').modal();
   }
+  printBtn = document.querySelector('#print');
+  printBtn.addEventListener('click',function(){
+    console.log("printintg");
+    scheduleDiv = document.querySelector('#schedule');
+    scheduleDiv.print();
+  });
+  
+  emailBtn = document.querySelector('#email');
+  emailBtn.addEventListener('click',function() {
+    routerPost('emailer');
+  });
+  document.querySelectorAll('table tbody tr').forEach(x =>{
+      weeklyHoursSpan = document.querySelector("#"+x.id+" .weekly_hours");
+      scheduledHours = parseInt(weeklyHoursSpan.innerHTML);
+    $(x).children().each(function(j,i){
+      let string =  $(i).children().html();
+      console.log(string);
+      if(string){
+        let sides = string.split("-");
+        let left = sides[0].split(" ")[1].split(":");
+        let right = sides[1].split(":");
+        let hourDiff = left[0] - right[0];
+        let minuteDiff = ((left[1] - right[1])*(10/6))*.01;
+        scheduledHours += (hourDiff + minuteDiff);
+        weeklyHoursSpan.innerHTML = scheduledHours;
+      }
+    });
+  });
 });
 </script>
 <div class="wrapper">
@@ -151,7 +149,9 @@ $(function() {
       
     <?php foreach ($teachers as $teacher) { ?>
     <tr id="teacher_<?=$teacher['id']?>" class="teacher_schedule">
-			<td><?=$teacher['title']?></td>
+			<td><?=$teacher['title']?> <br> 
+        <span style="font-size:10px;">weekly hours:<span class="weekly_hours"><?=$teacher['weekly_hours']?></span></span>
+      </td>
 			<td class="day" data-day="Monday"></td>
 			<td class="day" data-day="Tuesday"></td>
 			<td class="day" data-day="Wednesday"></td>

@@ -39,12 +39,12 @@ $(function() {
     if(strpos($column, '_id')){  ?>
     <label for="<?=$column?>"><?=str_replace("_id","",$column);?></label><br>
     <select id="<?=$column?>" name="<?=$column?>" class="selectpicker" data-width="100%">
-      <?php selectBoxOptionHelper($column, $_POST['rowId'], $_POST['table']); ?>
+      <?php selectBoxOptionHelper($column, $rowId, $_POST['table']); ?>
     </select>   
   <?php } elseif(strpos($column, '_list')) {  ?>
     <label for="<?=$column?>"><?=str_replace("_list","",$column);?></label><br>
     <select id="<?=$column?>" multiple  name="<?=$column?>" class="selectpicker" data-width="100%">
-      <?php multiSelectBoxHelper($column, $_POST['rowId'], $_POST['table']); ?>
+      <?php multiSelectBoxHelper($column, $rowId, $_POST['table']); ?>
     </select>   
   <?php } elseif($column != "is_active") { ?>
     <div class="form-group">

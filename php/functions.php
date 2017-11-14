@@ -31,25 +31,23 @@
     $selectors = "id, title";
     $selectors .= ($column == "rooms_list" ? " ,img":"");
     $qry = "SELECT $selectors FROM $associate_column";
-    echo $qry;
     $assoc_table_info = sql_query($qry);
     
-    //NOTE: get selected values
-    $selected_ids = "hello";
     if($row_id != Null){
-      $qry = "SELECT room_id FROM $parent_table WHERE id = $row_id";
-      $selected_ids = sql_query($qry);
+      $qry = "SELECT $column FROM $parent_table WHERE id = $row_id";
+      $selected = sql_query($qry);
     }
     
     foreach ($assoc_table_info as $info) {
       $id = $info['id'];
       $title = str_replace("_"," ",$info['title']);
       $img = $info['img'];
+      $isSelected = (in_array($title, json_decode($selected[0][$column]))?"selected":"");
       // $selected = (($selected_ids[0]['room_id'] != Null && $selected_ids[0]['room_id'] == $id) ? 'selected': '');
       if($column == "rooms_list"){
-        echo " <option id='$id' data-content=\"<img style='width:20px; filter: invert(100%);'src='http://schedular.xyz/imgs/$img'><span>$title</span>\">$title</option>";
+        echo " <option id='$id' ".$isSelected." data-content=\"<img style='width:20px; filter: invert(100%);'src='http://schedular.xyz/imgs/$img'><span>$title</span>\">$title</option>";
       }else{
-        echo " <option id='$id'>$title</option>";
+        echo " <option id='$id'  ".$isSelected." >$title</option>";
       }
     }
   }

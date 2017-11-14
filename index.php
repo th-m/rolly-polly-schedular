@@ -5,7 +5,9 @@ include('head.php');
 ?>
   
   <div id="rolly_polly_main">
-    
+    <div class="">
+      <img src="http://schedular.xyz/imgs/home.svg" alt="">
+    </div>
   </div>
     <!-- <h1 class="test_red">Hello, world!</h1> -->
   

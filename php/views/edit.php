@@ -12,6 +12,56 @@
   .hidden{
     display: none;
   }
+  .drawer {
+    /*background: hotpink;*/
+    width: 27%;
+    -ms-flex: 0 100px;
+    -webkit-box-flex:  0;
+    -moz-box-flex:  0;
+    -ms-box-flex:  0;
+    box-flex:  0;  
+  }
+  .drawer ul{
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+  .drawer ul li{
+    text-align: center;
+    margin-bottom: 4px;
+    padding:7px;
+    border: 1px solid #dedede;
+    /*border-color: #dedede;*/
+    border-radius: 7px;
+  }
+  .drawer ul li:hover{
+    background-color: #dedede;
+  }
+  .editContainer {
+    height: 100%;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-box;
+    display: box;
+    
+    -ms-flex-direction: row;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -ms-box-orient: horizontal;
+    box-orient: horizontal;
+  }
+
+  #editMain {
+   -ms-flex: 1;
+   -webkit-box-flex: 1;
+   -moz-box-flex: 1;
+   -ms-box-flex: 1;
+   box-flex: 1;  
+  }
+  #editMain form{
+    width: 100%;
+  }
 </style>
 
 <script type="text/javascript">

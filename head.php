@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
     <link rel="stylesheet" href="./css/style.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vivus/0.4.3/vivus.min.js"></script>
+    
   </head>
   <body>
     <!-- <header>
@@ -47,13 +49,15 @@
                  <li><a class="dropdown-item get_view" data-view="edit" data-table="staff_members" data-assoctables='staff_roles,staff_rooms' href="#">Teachers</a></li>
                  <li><a class="dropdown-item get_view" data-view="edit" data-table="rooms" href="#">Rooms</a></li>
                  <li><a class="dropdown-item get_view" data-view="edit" data-table="events" href="#">Events</a></li>
-                 <li><a class="dropdown-item get_view" data-view="edit" data-table="roles" href="#">Roles</a></li>             
+                 <!-- <li><a class="dropdown-item get_view" data-view="edit" data-table="roles" href="#">Roles</a></li>              -->
                </ul>
              </li>
            </ul>
          </div><!--/.nav-collapse -->
        </div><!--/.container-fluid -->
      </nav>
+  
+     
     <!-- <nav class="navbar navbar-expand-md navbar-light bg-faded" style="background-color: #4151A3;">
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
