@@ -46,14 +46,12 @@
      echo "string";
      break;
    case 'update_forms':
-     // print_r($json);
      $table = $json['data']['table'];
      unset($json['data']['table']);
-     // print_r($json['data']);
-    $response['rowId'] =  update_sql($json['data'], $table);
-    if($response['rowId']){
-      $response['response'] = "form updated";
-    }
+     $response['rowId'] =  update_sql($json['data'], $table);
+     if($response['rowId']){
+        $response['response'] = "form updated";
+     }
     // print_r($response);
    case 'db_delete':
      sql_delete($json['data']['id'], $json['data']['table']);

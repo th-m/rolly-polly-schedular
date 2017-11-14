@@ -47,7 +47,6 @@
       }else{
         $isSelected = ($title == $selected[0][$column]?"selected":"");
       }
-      // $selected = (($selected_ids[0]['room_id'] != Null && $selected_ids[0]['room_id'] == $id) ? 'selected': '');
       if($column == "rooms_list"){
         echo " <option id='$id' ".$isSelected." data-content=\"<img style='width:20px; filter: invert(100%);'src='http://schedular.xyz/imgs/$img'><span>$title</span>\">$title</option>";
       }else{

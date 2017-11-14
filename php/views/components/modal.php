@@ -30,8 +30,25 @@
   var teachersSchedule = {};
   var scheduleBlob = <?=$schedule_blob?>;
   var teacherData = <?=$teacher_data?>;
-  var roomsList = JSON.parse(teacherData.rooms_list);
-  var eventsList = JSON.parse(teacherData.events_list);
+  var eventsList;
+  var roomsList
+
+  if(teacherData.eventsList){
+    if(teacherData.eventsList[0] == '[' && teacherData.eventsList[teacherData.eventsList.length-1] == ']'){
+      eventsList = JSON.parse(teacherData.events_list);
+    }else{
+      eventsList = [teacherData.rooms_list];
+    }
+  }
+
+  if(teacherData.rooms_list){
+    if(teacherData.rooms_list[0] == '[' && teacherData.rooms_list[teacherData.rooms_list.length-1] == ']'){
+      roomsList = JSON.parse(teacherData.rooms_list);
+    }else{
+      roomsList = [teacherData.rooms_list];
+    }
+  }
+
   if(scheduleBlob && scheduleBlob != "null"){
     scheduleOBJ = JSON.parse(scheduleBlob);
     setTimeout(addRowsFromDB, 5); // timing is funny here. set a time out to wait for modal before firing function. 
@@ -51,16 +68,11 @@
       if(x.id != undefined && x.id != null){
         teachersSchedule[x.id]={}
         x.childNodes.forEach(j =>{
-          // console.log(j.className);
-          // if(j.className.indexOf("room") !== -1){
           if(j.className != "btn-group bootstrap-select room"){
             var string = j.value;
             var re = new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$");
             if (re.test(string)) {
-                console.log("Valid");
             } else {
-                console.log("Invalid");
-                console.log(j);
                 valid = false;
             }
             teachersSchedule[x.id][j.getAttribute('name')] = j.value;  
@@ -71,7 +83,7 @@
       }
     });
     if(valid){
-      console.log(teachersSchedule);
+      // console.log(teachersSchedule);
       routerPost('update_teacher_schedule_json',{'json_blob':teachersSchedule, 'dow':'<?=$_POST['day']?>','staff_id':'<?=$_POST['teacherId']?>'});  
     }
   });
@@ -93,7 +105,7 @@
           opt.value = x;
           opt.innerHTML = x;
           
-          console.log(x);
+          // console.log(x);
           optgrp.appendChild(opt);
       });
       room.appendChild(optgrp);
@@ -105,7 +117,7 @@
           opt = document.createElement("option");
           opt.value = x;
           opt.innerHTML = x;
-            console.log(x);
+            // console.log(x);
           optgrp.appendChild(opt);
       });
       room.appendChild(optgrp);
@@ -113,7 +125,7 @@
     div.appendChild(room);
     
     div.className = "schedule_data";
-    console.log(form);
+    // console.log(form);
     div.id = form.childElementCount;
     // console.log(startVal);
     start = document.createElement("input");
