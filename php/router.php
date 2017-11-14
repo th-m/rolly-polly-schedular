@@ -51,6 +51,10 @@
      unset($json['data']['table']);
      // print_r($json['data']);
     $response['rowId'] =  update_sql($json['data'], $table);
+    if($response['rowId']){
+      $response['response'] = "form updated";
+    }
+    // print_r($response);
    case 'db_delete':
      sql_delete($json['data']['id'], $json['data']['table']);
      $response['rowId'] = $json['data']['id'];

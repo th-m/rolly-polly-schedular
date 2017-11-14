@@ -12,13 +12,16 @@
 <script type="text/javascript">
 $(function() {
   document.querySelector('form').addEventListener('submit', function(){
+    console.log("submited");
     let data = $(this).serializeObject();
     data['table'] = '<?=$_POST['table']?>';
     routerPost('update_forms',data, function(){
       console.log("success");
     });
   });
+  
   document.querySelector('#delete').addEventListener('click', function(){
+    console.log("deleted");
     routerPost('db_delete', {id:this.dataset.row, table:this.dataset.table}, function(data){
       tempData = {
         view: "edit",
