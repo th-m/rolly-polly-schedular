@@ -14,12 +14,7 @@
   }else{
     $json_blob = "false";
   }
-  // echo $json_blob;
-  // echo($prepBlob);
-  // print($prepBlob);
   
-  
-
  ?>
  <style media="screen">
     .wrapper table{
@@ -90,9 +85,6 @@
    
    if(jsonBlob && jsonBlob != "null"){
      prepOBJ = JSON.parse(jsonBlob);
-     console.log("i think we have data");
-     console.log(jsonBlob);
-     console.log(prepOBJ);
    }else{
      setUpBlankPrepObj();
    }
@@ -117,6 +109,7 @@
           hr = document.createElement('div');
           hr.className += "hour";
           hr.dataset.hour = h;
+          hr.dataset.kids = prepOBJ[classId][wd][h];
           hr.innerHTML = prepOBJ[classId][wd][h]
           weekDiv.append(hr);
         }); 
@@ -136,7 +129,7 @@
    });
    
    function updateDB(){
-     console.log("fired update DB")
+     // console.log("fired update DB")
      let classId = document.querySelector(".rooms_list .selected").dataset.roomid;
      prepOBJ[classId]={};
      
@@ -182,7 +175,7 @@
           confirmButtonText: 'Submit',
         
         }).then(function (kids) {
-          console.log(divCells);
+          // console.log(divCells);
           divCells.forEach(x => {
             x[0].classList.remove("highlighted");
             x[0].setAttribute('data-kids', kids);

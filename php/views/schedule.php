@@ -15,6 +15,10 @@
   }else{
     $schedule = "false";
   }
+  $qry = "SELECT * FROM kids_next_week WHERE date = '$d'";
+  $kids_next_week = sql_query($qry);
+  $kids_next_week = json_encode($kids_next_week[0]['json_blob']);
+  // print_r($kids_next_week[0]['json_blob']);
 ?>
 <style media="screen">
   .wrapper table{
@@ -37,6 +41,9 @@
   }
   .wrapper table tbody tr td:first-child{
     text-align: center;
+  }
+  .wrapper table tbody tr td:first-child span{
+    font-size: 10px;
   }
   .wrapper table tbody tr td:last-child{
    border-right: none;
@@ -61,21 +68,30 @@
 $(function() {
   sched = <?=$schedule?>;
   staffMembers = <?=$teachersJson?>;
-  console.log("staffMembers");
-  console.log(staffMembers);
+  kidsNextWeek = JSON.parse(<?=$kids_next_week?>);
+  var busyHours = {};
+  Object.keys(kidsNextWeek).forEach(x=>{
+    Object.keys(kidsNextWeek[x]).forEach(j=>{
+      classDay = x +"_"+ j;
+      busyHours[classDay] = [0,0];
+      Object.keys(kidsNextWeek[x][j]).forEach(xj=>{
+        if(kidsNextWeek[x][j][xj] > busyHours[classDay][1]){
+           busyHours[classDay]=[xj,kidsNextWeek[x][j][xj]]
+        }
+      });
+    });
+  });
+  console.log("busyHours");
+  console.log(busyHours);
   if(sched && sched != "null"){
     writeSchedule();
   }
   function writeSchedule(){
     sched.forEach(x =>{
-      console.log(x);
       let string;
       let div = document.querySelector("tbody #teacher_"+x.staff_id+" [data-day='"+x.dow+"']");
-      console.log(div);
       if(div){
-        
         JSON.parse(x.json_blob).forEach(j =>{
-          console.log(j);
           p = document.createElement("p");
           p.innerHTML = j.room +" "+ j.start+"-"+j.stop;
           div.appendChild(p);
@@ -93,7 +109,7 @@ $(function() {
     day = $d.day;
     teacherId = $(e.target).parent().attr('id');
     teacherName = $("#"+teacherId+" td:first-child").html();
-    title = teacherName+" - "+day;
+    title = day+" - "+teacherName;
     $("#editTeacherLabel").html(title);
     tempData = {
       view: "components/modal",
@@ -105,7 +121,6 @@ $(function() {
   }
   printBtn = document.querySelector('#print');
   printBtn.addEventListener('click',function(){
-    console.log("printintg");
     scheduleDiv = document.querySelector('#schedule');
     scheduleDiv.print();
   });
@@ -119,7 +134,6 @@ $(function() {
       scheduledHours = parseInt(weeklyHoursSpan.innerHTML);
     $(x).children().each(function(j,i){
       let string =  $(i).children().html();
-      console.log(string);
       if(string){
         let sides = string.split("-");
         let left = sides[0].split(" ")[1].split(":");
@@ -150,7 +164,9 @@ $(function() {
     <?php foreach ($teachers as $teacher) { ?>
     <tr id="teacher_<?=$teacher['id']?>" class="teacher_schedule">
 			<td><?=$teacher['title']?> <br> 
-        <span style="font-size:10px;">weekly hours:<span class="weekly_hours"><?=$teacher['weekly_hours']?></span></span>
+        <span>hrs: &nbsp;<span class="weekly_hours"><?=$teacher['weekly_hours']?></span></span>
+        <br> 
+        <span>rooms: &nbsp;<span class="rooms"><?=getImgIconsforTeacher($teacher['id'])?></span></span>
       </td>
 			<td class="day" data-day="Monday"></td>
 			<td class="day" data-day="Tuesday"></td>

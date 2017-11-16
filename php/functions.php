@@ -54,4 +54,34 @@
       }
     }
   }
+  
+  function getImgIconsforTeacher($teacherId){
+    $qry = "SELECT rooms_list FROM staff_members WHERE id = $teacherId";
+    $rooms_list = sql_query($qry);  
+    if(substr($rooms_list[0]['rooms_list'], 0,1) == "[" && substr($rooms_list[0]['rooms_list'],-1) == "]"){
+      $rooms = json_decode($rooms_list[0]['rooms_list']);
+    }
+    else{
+      $rooms[] = $rooms_list[0]['rooms_list'];
+    }
+    $qry = "SELECT title, img FROM rooms;";
+    $rooms_title = sql_query($qry);
+    // echo $qry;
+    // print_r($rooms_title);
+    foreach ($rooms as $room) {
+      $room = str_replace(" ","_",$room);
+      foreach ($rooms_title as $key => $value) {
+        if(in_array($room,$value)){
+          // print_r($rooms_title[$key]);
+          $img_title = $rooms_title[$key]['title'];
+          $img_source = $rooms_title[$key]['img'];
+          $link = "http://schedular.xyz/imgs/$img_source";
+          echo "<img data-name='$img_title' style='width:10px; filter:invert(100%);' src='$link'/> &nbsp;";
+          
+        }
+      }
+  
+    }
+      
+  }
  ?>

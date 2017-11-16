@@ -18,81 +18,18 @@
     
   </head>
   <body>
-    <!-- <header>
-      <img id="Logo" src="drtab_logo.png">
-      <h1>IHC Child Development Scheduler</h1>
-    </header> -->
-    <!-- Static navbar -->
-     <!-- <nav class="navbar navbar-default navbar-inverse" style="margin-bottom:0!important; background-color: #4151A3; color:white; border:none;"> -->
-     <nav class="navbar navbar-default" style="margin-bottom:0!important; color:white; border:none;">
-       <div class="container-fluid">
-         <div class="navbar-header">
-           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-             <span class="sr-only">Toggle navigation</span>
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-             <span class="icon-bar"></span>
-           </button>
-           <a class="navbar-brand" href="#">Rolly Polly Schedular</a>
-         </div>
-         <div id="navbar" class="navbar-collapse collapse">
-           <ul class="nav navbar-nav">
-             <li class="nav-item">
-               <a class="nav-link get_view" href="#"  data-view="schedule" data-info="schedule">Schedule</a>
-             </li>
-             <li class="nav-item" >
-               <a class="nav-link get_view" href="#" data-view="prep" data-info="prep">Prep</a>
-             </li>
-             <li class="dropdown">
-               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin Controls <span class="caret"></span></a>
-               <ul class="dropdown-menu">
-                 <li><a class="dropdown-item get_view" data-view="edit" data-table="staff_members" data-assoctables='staff_roles,staff_rooms' href="#">Teachers</a></li>
-                 <li><a class="dropdown-item get_view" data-view="edit" data-table="rooms" href="#">Rooms</a></li>
-                 <li><a class="dropdown-item get_view" data-view="edit" data-table="events" href="#">Events</a></li>
-                 <!-- <li><a class="dropdown-item get_view" data-view="edit" data-table="roles" href="#">Roles</a></li>              -->
-               </ul>
-             </li>
-           </ul>
-         </div><!--/.nav-collapse -->
-       </div><!--/.container-fluid -->
-     </nav>
-  
-     
-    <!-- <nav class="navbar navbar-expand-md navbar-light bg-faded" style="background-color: #4151A3;">
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <a class="navbar-brand" href="#" style="color:white;"> <img id="Logo" style="width:70px;" src="drtab_logo.png"> </a>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link get_view" href="#"  data-view="schedule" data-info="schedule">Schedule</a>
-          </li>
-          <li class="nav-item" >
-            <a class="nav-link get_view" href="#" data-view="prep" data-info="prep">Prep</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Admin
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item get_view" data-view="edit" data-table="staff_members" data-assoctables='staff_roles,staff_rooms' href="#">Teachers</a>
-              <a class="dropdown-item get_view" data-view="edit" data-table="rooms" href="#">Rooms</a>
-              <a class="dropdown-item get_view" data-view="edit" data-table="events" href="#">Events</a>
-              <a class="dropdown-item get_view" data-view="edit" data-table="roles" href="#">Roles</a>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav> -->
+    <?php if (!empty($_POST)){
+        include ('php/sql.php');
+        $qry = "SELECT * FROM users WHERE name = '{$_POST["name"]}' AND email = '{$_POST["email"]}';";
+        $user = sql_query($qry);
+        $_SESSION['user'] = $user[0];
+        if(isset($user[0]['id']) && $user[0]['id'] != ""){
+          include ("nav.php");
+        }
+      }else{
+        include ("login.php");
+      }
+    ?>
     
-    <!-- <nav>
-      <ul>
-        <li data-view="edit" data-table="staff_members" data-assoctables='staff_roles,staff_rooms'>Teachers</li>
-        <li data-view="edit" data-table="rooms">Room</li>
-        <li data-view="edit" data-table="events">Events</li>
-        <li data-view="edit" data-table="roles">Roles</li>
-        <li data-view="schedule" data-info="schedule">Schedule</li>
-        <li data-view="prep" data-info="prep">Prep</li>
-      </ul>
-    </nav> -->
+  
+  
