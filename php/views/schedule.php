@@ -24,6 +24,19 @@
   }else{
     $schedule_planned_json = "false";
   }
+  
+  $qry = "SELECT * FROM rooms";
+  $rooms_list = sql_query($qry);
+  $rooms_list = json_encode($rooms_list);
+  
+  $qry = "SELECT json_blob FROM kids_next_week WHERE date = '$d'";
+  // echo $qry;
+  $prepBlob= sql_query($qry);
+  if(isset($prepBlob[0]['json_blob']) && $prepBlob[0]['json_blob'] != ""){
+    $prepBlob = json_encode($prepBlob[0]['json_blob']);
+  }else{
+    $prepBlob = "false";
+  }
   // print_r($schedule_planed);
 
   // print_r($kids_next_week[0]['json_blob']);
@@ -80,15 +93,89 @@
 $(function() {
   // sched = <?=$schedule?>;
   schedule_planned = <?=$schedule_planned_json?>;
-  // console.log("schedule_planned");
-  // console.log(schedule_planned);
+  console.log("schedule_planned");
+  console.log(schedule_planned);
   staffMembers = <?=$teachersJson?>;
   kidsNextWeek = JSON.parse(<?=$kids_next_week?>);
+  rooms_list = <?=$rooms_list?>;
+  console.log(rooms_list);
+  var prepBlob = JSON.parse(<?=$prepBlob?>);
+  console.log("prepBlob");
+  console.log(prepBlob);
   var busyHours = {};
   var weekDays = ['monday','tuesday','wednesday','thursday','friday'];
   
   weekDays.forEach(x => {
     console.log(x);
+  });
+  
+  // looop through kids_next_week
+  Object.keys(prepBlob).forEach(x=>{
+    // console.log(prepBlob.x);
+    
+    // find matching room 
+    ri = rooms_list.find(function(j){
+      return j.id == x;
+    })
+    
+    console.log(ri)
+    
+    // looop through weekdays
+    weekDays.forEach(w =>{
+      console.log("ri.max_students_per_teacher");
+      console.log(ri.max_students_per_teacher);
+      // check each hour in prep for each day
+      // TODO: Looop through class here then hours
+      Object.keys(prepBlob[x][w]).forEach(h =>{
+        // if no kids that hour skip
+        if(prepBlob[x][w][h] != 0){
+          if(ri.max_students_per_teacher){
+            var neededTeachers = Math.ceil(prepBlob[x][w][h]/ri.max_students_per_teacher);
+          }else{
+            var neededTeachers = 1;
+          }
+          console.log("hour");
+          console.log(h);
+          console.log("prepBlob[x][w][h]");
+          console.log(prepBlob[x][w][h]);
+          console.log("neededTeachers")
+          console.log(neededTeachers)
+          // if kids are schedule that hour match it scheduled teachers
+          matchDaysArray = [];
+          Object.keys(schedule_planned).forEach(sp =>{
+          
+            if(schedule_planned[sp].dow.toUpperCase() == w.toUpperCase()){
+              spw = schedule_planned[sp];
+              matchDaysArray.push(spw);
+            }
+          });
+          // check rooms in schedule planned
+          if(matchDaysArray){
+            // console.log("matchDaysArray");
+            // console.log(matchDaysArray);
+            matchDaysArray.forEach(mda=>{
+              mdaJson = JSON.parse(mda.json_blob);
+              mdaJson.forEach(mdaj => {
+                mdaj.room = mdaj.room.replace(" ", "_");
+              
+                
+                if(ri.title.toUpperCase() == mdaj.room.toUpperCase()){
+                  console.log("mdaj");
+                  console.log(mdaj);
+                  console.log("hour");
+                  console.log(h);
+                
+                }
+              });
+            });
+          }
+        } 
+      });
+
+    });
+    
+    
+    // console.log(x)
   });
   // for each day  check each class.
   // if there is a teacher for each student hide img else show it
@@ -180,11 +267,11 @@ $(function() {
     <thead>
 			<tr>
 				<th>Teachers</th>
-				<th>Monday</th>
-				<th>Tuesday</th>
-				<th>Wednesday</th>
-				<th>Thursday</th>
-				<th>Friday</th>
+				<th data-headday="monday">Monday</th>
+				<th data-headday="tuesday">Tuesday</th>
+				<th data-headday="wednesday">Wednesday</th>
+				<th data-headday="thursday">Thursday</th>
+				<th data-headday="friday">Friday</th>
 			</tr>
     </thead>
     <tbody>
