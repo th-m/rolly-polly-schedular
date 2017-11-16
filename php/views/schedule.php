@@ -40,12 +40,16 @@
    /*width:25%;*/
    text-align: center;
   }
+  .wrapper table tbody tr td * {
+  z-index: 0;
+  }
   .wrapper table tbody tr td{
    height: 55px;
    padding: 0px;
    border-right: 1px solid #e6e6e6;
    border-bottom: 1px solid #e6e6e6;
    text-align: center;
+   z-index: 9999;
   }
   .wrapper table tbody tr td:first-child{
     text-align: center;
@@ -112,7 +116,7 @@ $(function() {
       if(div){
         JSON.parse(x.json_blob).forEach(j =>{
           p = document.createElement("p");
-          p.innerHTML = j.room +" "+ j.start+"-"+j.stop;
+          p.innerHTML = "<span class='room_title'>"+j.room +"</span> "+ "<span class='start_time'>"+ j.start+"</span>-<span class='end_time'>"+j.stop+"</span>";
           div.appendChild(p);
         });
       }
@@ -124,9 +128,12 @@ $(function() {
   });
   
   function triggerModal(e){
-    $d = $(e.target).data();
-    day = $d.day;
-    teacherId = $(e.target).parent().attr('id');
+    $td = $(e.target);
+    if(!$td.is("td")){
+      $td = $(e.target).parents("td")
+    }
+    day = $td.data().day;
+    teacherId = $td.parent().attr('id');
     teacherName = $("#"+teacherId+" td:first-child").html();
     title = day+" - "+teacherName;
     $("#editTeacherLabel").html(title);
@@ -152,16 +159,18 @@ $(function() {
       weeklyHoursSpan = document.querySelector("#"+x.id+" .weekly_hours");
       scheduledHours = parseInt(weeklyHoursSpan.innerHTML);
     $(x).children().each(function(j,i){
-      let string =  $(i).children().html();
-      if(string){
-        let sides = string.split("-");
-        let left = sides[0].split(" ")[1].split(":");
-        let right = sides[1].split(":");
-        let hourDiff = left[0] - right[0];
-        let minuteDiff = ((left[1] - right[1])*(10/6))*.01;
-        scheduledHours += (hourDiff + minuteDiff);
-        weeklyHoursSpan.innerHTML = scheduledHours;
-      }
+      $(i).children("p").each(function(jj, ii){
+        let startTime =  $(ii).find(".start_time").html();
+        let endTime =  $(ii).find(".end_time").html();
+        if(startTime){
+          let left = startTime.split(":");
+          let right = endTime.split(":");
+          let hourDiff = left[0] - right[0];
+          let minuteDiff = ((left[1] - right[1])*(10/6))*.01;
+          scheduledHours += (hourDiff + minuteDiff);
+          weeklyHoursSpan.innerHTML = scheduledHours;
+        }
+      })
     });
   });
 });

@@ -69,23 +69,32 @@
   form = document.querySelector("form");
   
   document.querySelector(".modal-footer .btn-primary").addEventListener('click', function(){
+    console.log("clicked");
     valid = true;
     form.childNodes.forEach(x =>{
-      if(x.id != undefined && x.id != null){
-        teachersSchedule[x.id]={}
-        x.childNodes.forEach(j =>{
-          if(j.className != "btn-group bootstrap-select room"){
-            var string = j.value;
-            var re = new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$");
-            if (re.test(string)) {
-            } else {
-                valid = false;
+    
+      if($.trim($(x).html())!=''){
+        schedata = $(x).children(".schedule_data");
+        console.log(schedata);
+        if(schedata.attr('id') != undefined && schedata.attr('id') != null){
+          console.log(schedata.attr('id'));
+          teachersSchedule[schedata.attr('id')]={}
+          schedata.children().each(function(i,j){
+          // schedata.childNodes.forEach(j =>{
+            console.log(j);
+            if(j.className != "btn-group bootstrap-select room"){
+              var string = j.value;
+              var re = new RegExp("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$");
+              if (re.test(string)) {
+              } else {
+                  valid = false;
+              }
+              teachersSchedule[schedata.attr('id')][j.getAttribute('name')] = j.value;  
+            }else{
+              teachersSchedule[schedata.attr('id')]['room'] = j.firstChild.title;  
             }
-            teachersSchedule[x.id][j.getAttribute('name')] = j.value;  
-          }else{
-            teachersSchedule[x.id]['room'] = j.firstChild.title;  
-          }
-        });
+          });
+        }
       }
     });
     if(valid){
