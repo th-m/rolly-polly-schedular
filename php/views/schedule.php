@@ -8,16 +8,24 @@
   date_default_timezone_set("America/Denver");
   $sunday = strtotime('Sunday');
   $d = date('Y-m-d', $sunday);
-  $qry = "SELECT * FROM schedule_next_week WHERE date = '$d'";
-  $schedule= sql_query($qry);
-  if(isset($schedule[0]) && $schedule[0] != ""){
-    $schedule = json_encode($schedule);
-  }else{
-    $schedule = "false";
-  }
+  
+  
   $qry = "SELECT * FROM kids_next_week WHERE date = '$d'";
   $kids_next_week = sql_query($qry);
   $kids_next_week = json_encode($kids_next_week[0]['json_blob']);
+  
+  
+  $qry = "SELECT schedule_next_week.*, staff_members.* FROM schedule_next_week 
+  LEFT JOIN staff_members ON staff_members.id=schedule_next_week.staff_id WHERE date =  '$d';";
+  $schedule_planned = sql_query($qry);
+  // echo "$qry";
+  if(isset($schedule_planned[0]) && $schedule_planned[0] != ""){
+    $schedule_planned_json = json_encode($schedule_planned);
+  }else{
+    $schedule_planned_json = "false";
+  }
+  // print_r($schedule_planed);
+
   // print_r($kids_next_week[0]['json_blob']);
 ?>
 <style media="screen">
@@ -66,28 +74,39 @@
 <script type="text/javascript">
 // window.onload = function(){
 $(function() {
-  sched = <?=$schedule?>;
+  // sched = <?=$schedule?>;
+  schedule_planned = <?=$schedule_planned_json?>;
+  // console.log("schedule_planned");
+  // console.log(schedule_planned);
   staffMembers = <?=$teachersJson?>;
   kidsNextWeek = JSON.parse(<?=$kids_next_week?>);
   var busyHours = {};
-  Object.keys(kidsNextWeek).forEach(x=>{
-    Object.keys(kidsNextWeek[x]).forEach(j=>{
-      classDay = x +"_"+ j;
-      busyHours[classDay] = [0,0];
-      Object.keys(kidsNextWeek[x][j]).forEach(xj=>{
-        if(kidsNextWeek[x][j][xj] > busyHours[classDay][1]){
-           busyHours[classDay]=[xj,kidsNextWeek[x][j][xj]]
-        }
-      });
-    });
+  var weekDays = ['monday','tuesday','wednesday','thursday','friday'];
+  
+  weekDays.forEach(x => {
+    console.log(x);
   });
-  console.log("busyHours");
-  console.log(busyHours);
-  if(sched && sched != "null"){
+  // for each day  check each class.
+  // if there is a teacher for each student hide img else show it
+  // Object.keys(kidsNextWeek).forEach(x=>{
+  //   Object.keys(kidsNextWeek[x]).forEach(j=>{
+  //     classDay = x +"_"+ j;
+  //     busyHours[classDay] = [0,0];
+  //     Object.keys(kidsNextWeek[x][j]).forEach(xj=>{
+  //       if(kidsNextWeek[x][j][xj] > busyHours[classDay][1]){
+  //          busyHours[classDay]=[xj,kidsNextWeek[x][j][xj]]
+  //       }
+  //     });
+  //   });
+  // });
+  // console.log("busyHours");
+  // console.log(busyHours);
+  if(schedule_planned && schedule_planned != "null"){
     writeSchedule();
   }
+  
   function writeSchedule(){
-    sched.forEach(x =>{
+    schedule_planned.forEach(x =>{
       let string;
       let div = document.querySelector("tbody #teacher_"+x.staff_id+" [data-day='"+x.dow+"']");
       if(div){
@@ -185,9 +204,6 @@ $(function() {
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editTeacherLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div id="modal_body">
       </div>

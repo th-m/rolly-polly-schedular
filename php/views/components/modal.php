@@ -16,6 +16,12 @@
   $teacher_data = json_encode($teacher_data[0]);
 ?>
 <style media="screen">
+  #dailySchedule div i{
+    position: relative;
+    top:5px;
+    right: 10px;
+    color:#6e6e6e;
+  }
   .schedule_data{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -33,8 +39,8 @@
   var eventsList;
   var roomsList
 
-  if(teacherData.eventsList){
-    if(teacherData.eventsList[0] == '[' && teacherData.eventsList[teacherData.eventsList.length-1] == ']'){
+  if(teacherData.events_list){
+    if(teacherData.events_list[0] == '[' && teacherData.events_list[teacherData.events_list.length-1] == ']'){
       eventsList = JSON.parse(teacherData.events_list);
     }else{
       eventsList = [teacherData.rooms_list];
@@ -87,9 +93,34 @@
       routerPost('update_teacher_schedule_json',{'json_blob':teachersSchedule, 'dow':'<?=$_POST['day']?>','staff_id':'<?=$_POST['teacherId']?>'});  
     }
   });
-  
+  $('#dailySchedule').on('focusout', "input", function(){
+    // console.log($(this).val()); 
+    var time = $(this).val();
+    if(time.length < 3 || time.length > 5){
+      $(this).focus();
+      return false;
+    }
+    if(!time.includes(":")){
+      var time = time.slice(0, time.length-2) + ":" + time.slice(time.length-2);
+      $(this).val(time);
+      // return false;
+    }
+    // timeFormatted = $(this).val()[$(this).val()-3]
+  });
+  $('#dailySchedule').on('click', 'i', function(){
+    $(this).parent().remove();
+    console.log($(this).parent());
+    console.log("clicke");
+  });
   function addRow(e, startVal = null, stopVal = null, roomVal = null){
+    topdiv = document.createElement("div");
+    del = document.createElement("i");
+    del.className = "fa fa-times fa-lg";
+    // 
+    topdiv.appendChild(del);
+    
     div = document.createElement("div");
+    //<i class="fa fa-camera-retro fa-lg"></i>
     
     room = document.createElement("select");
     room.type = "text";
@@ -144,11 +175,11 @@
     stop.value = stopVal?stopVal:"";
     div.appendChild(stop);
     
-  
+    topdiv.appendChild(div);
     // room.value = roomVal;
     
     
-    form.appendChild(div);
+    form.appendChild(topdiv);
     $('.selectpicker').selectpicker();
     
   }
