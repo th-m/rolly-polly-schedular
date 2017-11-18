@@ -53,6 +53,12 @@
    /*width:25%;*/
    text-align: center;
   }
+  .wrapper thead tr th img{
+   width:10px; 
+   filter:invert(100%);
+   /*width:25%;*/
+   /*text-align: center;*/
+  }
   .wrapper table tbody tr td * {
   z-index: 0;
   }
@@ -94,25 +100,22 @@ $(function() {
   // sched = <?=$schedule?>;
   schedule_planned = <?=$schedule_planned_json?>;
   // console.log("/////schedule_planned//////");
-console.log(schedule_planned);
+  console.log(schedule_planned);
   // staffMembers = <?=$teachersJson?>;
+  
   kidsNextWeek = JSON.parse(<?=$kids_next_week?>);
   // console.log("/////kidsNextWeek//////");
-console.log(kidsNextWeek);
+  // console.log(kidsNextWeek);
   
   rooms_list = <?=$rooms_list?>;
   // console.log("/////rooms_list//////");
-console.log(rooms_list);
-// console.log(rooms_list);
+  // console.log(rooms_list);
   var prepBlob = JSON.parse(<?=$prepBlob?>);
   // console.log("//////prepBlob/////////");
-console.log(prepBlob);
+  // console.log(prepBlob);
   var busyHours = {};
   var weekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
-  
-  // weekDays.forEach(x => {
-  //   console.log(x);
-  // });
+
   function squashListings(listedTimes, squash=true){
     if(!squash)return true;
     squash = false;
@@ -136,19 +139,12 @@ console.log(prepBlob);
   //looop through kids_next_week
   function checkHours(){
     Object.keys(prepBlob).forEach(x=>{
-      // console.log(prepBlob.x);
-      
-      // each top level prepBlob key is a room id
-      // find matching room 
+
       ri = rooms_list.find(function(j){
         return j.id == x;
       })
     
-    
-      // looop through weekdays
       weekDays.forEach(w =>{
-        // console.log("ri.max_students_per_teacher");
-        // console.log(ri.max_students_per_teacher);
         
         listedTimes = []
         $("td.day[data-day='" + w + "'] p span[data-roomtitle='" + ri.title + "']").each((spI,span) =>{ 
@@ -157,17 +153,10 @@ console.log(prepBlob);
           endTime = listing.children(".end_time").html().split(":");
           listedTimes.push([startTime,endTime]);
         });
-        
-        //TODO flatten times
-        listedTimes.forEach(lt =>{
-            console.log(lt);
-        });
-        
+          
         if(listedTimes.length){
-      
           squashListings(listedTimes);
-          console.log("after listedTimes");
-          console.log(listedTimes);
+        
           listedTimes.forEach((lt,lti)=>{
             lt.forEach((ltx,ltxi) =>{
               listedTimes[lti][ltxi] = parseInt(ltx[0])+(parseInt(ltx[1])*(.1/6));
@@ -175,13 +164,32 @@ console.log(prepBlob);
           }); 
         
           Object.keys(prepBlob[x][w.toLowerCase()]).forEach(h =>{
-          
+            kids = parseInt(prepBlob[x][w.toLowerCase()][h]);
+            
+            if(kids){
+              maxKpT =parseInt(ri.max_students_per_teacher);
+              neededTeachers = Math.ceil(kids/maxKpT);
+              
+              kidsHandled = 0;
+              listedTimes.forEach(ltvk=>{
+                if(ltvk[0] < h && h < ltvk[1]){
+                  kidsHandled++;
+                }
+              });
+              
+              if(kidsHandled < neededTeachers){
+                img = document.createElement("img");
+                img.src = "http://schedular.xyz/imgs/"+ri.img;
+                img.id = ri.title+w;
+                if($("#" + ri.title+w).length == 0) {
+                  $("th[data-headday='"+w+"']").append(img);
+                }
+              }
+              console.log(kidsHandled);
+            }
           });
         }
-    
-      
       });
-    // console.log(x)
     });
   }
   
@@ -195,10 +203,15 @@ console.log(prepBlob);
       let string;
       let div = document.querySelector("tbody #teacher_"+x.staff_id+" [data-day='"+x.dow+"']");
       if(div){
-        JSON.parse(x.json_blob).forEach(j =>{
+        let parsed = JSON.parse(x.json_blob);
+        if (!Array.isArray(parsed)){
+          parsed = [parsed];
+        } 
+        parsed.forEach(j =>{
+          console.log(j);
           p = document.createElement("p");
           // j.room
-          console.log(j.room.replace(" ", "_"));
+          // console.log(j.room.replace(" ", "_"));
           p.innerHTML = "<span class='room_title' data-roomtitle='"+j.room.replace(" ", "_")+"'>"+j.room +"</span> "+ "<span class='start_time'>"+ j.start+"</span>-<span class='end_time'>"+j.stop+"</span>";
           div.appendChild(p);
         });
@@ -263,11 +276,11 @@ console.log(prepBlob);
     <thead>
 			<tr>
 				<th>Teachers</th>
-				<th data-headday="monday">Monday</th>
-				<th data-headday="tuesday">Tuesday</th>
-				<th data-headday="wednesday">Wednesday</th>
-				<th data-headday="thursday">Thursday</th>
-				<th data-headday="friday">Friday</th>
+				<th data-headday="Monday">Monday<br></th>
+				<th data-headday="Tuesday">Tuesday<br></th>
+				<th data-headday="Wednesday">Wednesday<br></th>
+				<th data-headday="Thursday">Thursday<br></th>
+				<th data-headday="Friday">Friday<br></th>
 			</tr>
     </thead>
     <tbody>

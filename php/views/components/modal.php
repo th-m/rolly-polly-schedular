@@ -33,7 +33,7 @@
   }
 </style>
 <script type="text/javascript">
-  var teachersSchedule = {};
+  
   var scheduleBlob = <?=$schedule_blob?>;
   var teacherData = <?=$teacher_data?>;
   var eventsList;
@@ -70,6 +70,7 @@
   
   document.querySelector(".modal-footer .btn-primary").addEventListener('click', function(){
     console.log("clicked");
+    var teachersSchedule = {};
     valid = true;
     form.childNodes.forEach(x =>{
     
@@ -98,7 +99,7 @@
       }
     });
     if(valid){
-      // console.log(teachersSchedule);
+      console.log(teachersSchedule);
       routerPost('update_teacher_schedule_json',{'json_blob':teachersSchedule, 'dow':'<?=$_POST['day']?>','staff_id':'<?=$_POST['teacherId']?>'});  
     }
   });
