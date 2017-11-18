@@ -93,107 +93,101 @@
 $(function() {
   // sched = <?=$schedule?>;
   schedule_planned = <?=$schedule_planned_json?>;
-  console.log("schedule_planned");
-  console.log(schedule_planned);
-  staffMembers = <?=$teachersJson?>;
+  // console.log("/////schedule_planned//////");
+console.log(schedule_planned);
+  // staffMembers = <?=$teachersJson?>;
   kidsNextWeek = JSON.parse(<?=$kids_next_week?>);
+  // console.log("/////kidsNextWeek//////");
+console.log(kidsNextWeek);
+  
   rooms_list = <?=$rooms_list?>;
-  console.log(rooms_list);
+  // console.log("/////rooms_list//////");
+console.log(rooms_list);
+// console.log(rooms_list);
   var prepBlob = JSON.parse(<?=$prepBlob?>);
-  console.log("prepBlob");
-  console.log(prepBlob);
+  // console.log("//////prepBlob/////////");
+console.log(prepBlob);
   var busyHours = {};
-  var weekDays = ['monday','tuesday','wednesday','thursday','friday'];
+  var weekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
   
-  weekDays.forEach(x => {
-    console.log(x);
-  });
-  
-  // looop through kids_next_week
-  Object.keys(prepBlob).forEach(x=>{
-    // console.log(prepBlob.x);
-    
-    // find matching room 
-    ri = rooms_list.find(function(j){
-      return j.id == x;
-    })
-    
-    console.log(ri)
-    
-    // looop through weekdays
-    weekDays.forEach(w =>{
-      console.log("ri.max_students_per_teacher");
-      console.log(ri.max_students_per_teacher);
-      // check each hour in prep for each day
-      // TODO: Looop through class here then hours
-      Object.keys(prepBlob[x][w]).forEach(h =>{
-        // if no kids that hour skip
-        if(prepBlob[x][w][h] != 0){
-          if(ri.max_students_per_teacher){
-            var neededTeachers = Math.ceil(prepBlob[x][w][h]/ri.max_students_per_teacher);
-          }else{
-            var neededTeachers = 1;
-          }
-          console.log("hour");
-          console.log(h);
-          console.log("prepBlob[x][w][h]");
-          console.log(prepBlob[x][w][h]);
-          console.log("neededTeachers")
-          console.log(neededTeachers)
-          // if kids are schedule that hour match it scheduled teachers
-          matchDaysArray = [];
-          Object.keys(schedule_planned).forEach(sp =>{
-          
-            if(schedule_planned[sp].dow.toUpperCase() == w.toUpperCase()){
-              spw = schedule_planned[sp];
-              matchDaysArray.push(spw);
-            }
-          });
-          // check rooms in schedule planned
-          if(matchDaysArray){
-            // console.log("matchDaysArray");
-            // console.log(matchDaysArray);
-            matchDaysArray.forEach(mda=>{
-              mdaJson = JSON.parse(mda.json_blob);
-              mdaJson.forEach(mdaj => {
-                mdaj.room = mdaj.room.replace(" ", "_");
-              
-                
-                if(ri.title.toUpperCase() == mdaj.room.toUpperCase()){
-                  console.log("mdaj");
-                  console.log(mdaj);
-                  console.log("hour");
-                  console.log(h);
-                
-                }
-              });
-            });
-          }
-        } 
-      });
-
-    });
-    
-    
-    // console.log(x)
-  });
-  // for each day  check each class.
-  // if there is a teacher for each student hide img else show it
-  // Object.keys(kidsNextWeek).forEach(x=>{
-  //   Object.keys(kidsNextWeek[x]).forEach(j=>{
-  //     classDay = x +"_"+ j;
-  //     busyHours[classDay] = [0,0];
-  //     Object.keys(kidsNextWeek[x][j]).forEach(xj=>{
-  //       if(kidsNextWeek[x][j][xj] > busyHours[classDay][1]){
-  //          busyHours[classDay]=[xj,kidsNextWeek[x][j][xj]]
-  //       }
-  //     });
-  //   });
+  // weekDays.forEach(x => {
+  //   console.log(x);
   // });
-  // console.log("busyHours");
-  // console.log(busyHours);
+  function squashListings(listedTimes, squash=true){
+    if(!squash)return true;
+    squash = false;
+    listedTimes.forEach((i, ii)=>{
+      listedTimes.forEach((j, ji)=>{
+        if(i[1].toString() == j[0].toString()){
+          listedTimes[ii][1] = listedTimes[ji][1];
+          listedTimes.splice(ji,1);
+          squash = true;
+        }
+      });
+    });
+    squashListings(listedTimes, squash)
+  }
+  
+  function convertToDecimal(listedTimes){
+    listedTimes.map(x=>{
+      return x[0]+x[1]*(.1/6);
+    })
+  }
+  //looop through kids_next_week
+  function checkHours(){
+    Object.keys(prepBlob).forEach(x=>{
+      // console.log(prepBlob.x);
+      
+      // each top level prepBlob key is a room id
+      // find matching room 
+      ri = rooms_list.find(function(j){
+        return j.id == x;
+      })
+    
+    
+      // looop through weekdays
+      weekDays.forEach(w =>{
+        // console.log("ri.max_students_per_teacher");
+        // console.log(ri.max_students_per_teacher);
+        
+        listedTimes = []
+        $("td.day[data-day='" + w + "'] p span[data-roomtitle='" + ri.title + "']").each((spI,span) =>{ 
+          listing = $(span).parent();
+          startTime = listing.children(".start_time").html().split(":");
+          endTime = listing.children(".end_time").html().split(":");
+          listedTimes.push([startTime,endTime]);
+        });
+        
+        //TODO flatten times
+        listedTimes.forEach(lt =>{
+            console.log(lt);
+        });
+        
+        if(listedTimes.length){
+      
+          squashListings(listedTimes);
+          console.log("after listedTimes");
+          console.log(listedTimes);
+          listedTimes.forEach((lt,lti)=>{
+            lt.forEach((ltx,ltxi) =>{
+              listedTimes[lti][ltxi] = parseInt(ltx[0])+(parseInt(ltx[1])*(.1/6));
+            })
+          }); 
+        
+          Object.keys(prepBlob[x][w.toLowerCase()]).forEach(h =>{
+          
+          });
+        }
+    
+      
+      });
+    // console.log(x)
+    });
+  }
+  
   if(schedule_planned && schedule_planned != "null"){
     writeSchedule();
+    checkHours();
   }
   
   function writeSchedule(){
@@ -203,7 +197,9 @@ $(function() {
       if(div){
         JSON.parse(x.json_blob).forEach(j =>{
           p = document.createElement("p");
-          p.innerHTML = "<span class='room_title'>"+j.room +"</span> "+ "<span class='start_time'>"+ j.start+"</span>-<span class='end_time'>"+j.stop+"</span>";
+          // j.room
+          console.log(j.room.replace(" ", "_"));
+          p.innerHTML = "<span class='room_title' data-roomtitle='"+j.room.replace(" ", "_")+"'>"+j.room +"</span> "+ "<span class='start_time'>"+ j.start+"</span>-<span class='end_time'>"+j.stop+"</span>";
           div.appendChild(p);
         });
       }
@@ -253,7 +249,7 @@ $(function() {
           let left = startTime.split(":");
           let right = endTime.split(":");
           let hourDiff = left[0] - right[0];
-          let minuteDiff = ((left[1] - right[1])*(10/6))*.01;
+          let minuteDiff = ((left[1] - right[1])*(.1/6));
           scheduledHours += (hourDiff + minuteDiff);
           weeklyHoursSpan.innerHTML = scheduledHours;
         }
