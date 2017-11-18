@@ -131,23 +131,17 @@ $(function() {
     squashListings(listedTimes, squash)
   }
   
-  function convertToDecimal(listedTimes){
-    listedTimes.map(x=>{
-      return x[0]+x[1]*(.1/6);
-    })
-  }
-  //looop through kids_next_week
   function checkHours(){
     Object.keys(prepBlob).forEach(x=>{
-
-      ri = rooms_list.find(function(j){
+      // x is prep object corresponding to room id
+      roomInfo = rooms_list.find(function(j){
         return j.id == x;
       })
-    
+      
       weekDays.forEach(w =>{
         
         listedTimes = []
-        $("td.day[data-day='" + w + "'] p span[data-roomtitle='" + ri.title + "']").each((spI,span) =>{ 
+        $("td.day[data-day='" + w + "'] p span[data-roomtitle='" + roomInfo.title + "']").each((spI,span) =>{ 
           listing = $(span).parent();
           startTime = listing.children(".start_time").html().split(":");
           endTime = listing.children(".end_time").html().split(":");
@@ -163,25 +157,25 @@ $(function() {
             })
           }); 
         
-          Object.keys(prepBlob[x][w.toLowerCase()]).forEach(h =>{
-            kids = parseInt(prepBlob[x][w.toLowerCase()][h]);
+          Object.keys(prepBlob[x][w.toLowerCase()]).forEach(hour =>{
+            kids = parseInt(prepBlob[x][w.toLowerCase()][hour]);
             
             if(kids){
-              maxKpT =parseInt(ri.max_students_per_teacher);
+              maxKpT =parseInt(roomInfo.max_students_per_teacher);
               neededTeachers = Math.ceil(kids/maxKpT);
               
               kidsHandled = 0;
               listedTimes.forEach(ltvk=>{
-                if(ltvk[0] <= h && h < ltvk[1]){
+                if(ltvk[0] <= hour && hour < ltvk[1]){
                   kidsHandled++;
                 }
               });
               
               if(kidsHandled < neededTeachers){
                 img = document.createElement("img");
-                img.src = "http://schedular.xyz/imgs/"+ri.img;
-                img.id = ri.title+w;
-                if($("#" + ri.title+w).length == 0) {
+                img.src = "http://schedular.xyz/imgs/"+roomInfo.img;
+                img.id = roomInfo.title+w;
+                if($("#" + roomInfo.title+w).length == 0) {
                   $("th[data-headday='"+w+"']").append(img);
                 }
               }

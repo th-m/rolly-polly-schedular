@@ -3,3 +3,4 @@
 # dependencies
 error_log
 /php/error_log
+logs/
