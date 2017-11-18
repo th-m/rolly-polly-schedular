@@ -172,7 +172,7 @@ $(function() {
               
               kidsHandled = 0;
               listedTimes.forEach(ltvk=>{
-                if(ltvk[0] < h && h < ltvk[1]){
+                if(ltvk[0] <= h && h < ltvk[1]){
                   kidsHandled++;
                 }
               });
