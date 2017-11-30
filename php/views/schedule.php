@@ -131,6 +131,24 @@ $(function() {
     squashListings(listedTimes, squash)
   }
   
+  function PrintElem(elem){
+      Popup($('<div/>').append($("table").clone()).html());
+  }
+
+  function Popup(data){
+      var mywindow = window.open('', 'printable schedule', 'height='+$("table").height()+',width='+$("table").width());
+      mywindow.document.write('<html><head><title>printable schedule</title>');
+      mywindow.document.write('<link rel="stylesheet" href="http://www.dynamicdrive.com/ddincludes/mainstyle.css" type="text/css" />');
+      mywindow.document.write('</head><body >');
+      mywindow.document.write(data);
+      mywindow.document.write('</body></html>');
+
+      mywindow.print();
+    //  mywindow.close();
+
+      return true;
+  }
+  
   function checkHours(){
     Object.keys(prepBlob).forEach(x=>{
       // x is prep object corresponding to room id
@@ -235,16 +253,16 @@ $(function() {
     renderView(tempData.view, tempData, "modal_body");
     $('#teacherEditModal').modal();
   }
-  printBtn = document.querySelector('#print');
-  printBtn.addEventListener('click',function(){
-    scheduleDiv = document.querySelector('#schedule');
-    scheduleDiv.print();
-  });
-  
-  emailBtn = document.querySelector('#email');
-  emailBtn.addEventListener('click',function() {
-    routerPost('emailer');
-  });
+  // printBtn = document.querySelector('#print');
+  // printBtn.addEventListener('click',function(){
+  //   scheduleDiv = document.querySelector('#schedule');
+  //   scheduleDiv.print();
+  // });
+  // 
+  // emailBtn = document.querySelector('#email');
+  // emailBtn.addEventListener('click',function() {
+  //   routerPost('emailer');
+  // });
   document.querySelectorAll('table tbody tr').forEach(x =>{
       weeklyHoursSpan = document.querySelector("#"+x.id+" .weekly_hours");
       scheduledHours = parseInt(weeklyHoursSpan.innerHTML);
@@ -310,7 +328,7 @@ $(function() {
   </div>
 </div>
 
-<div class="action_list">
+<!-- <div class="action_list">
   <span id="print" >Print</span>
   <span id="email" >email</span>
-</div>
+</div> -->
